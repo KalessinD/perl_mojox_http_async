@@ -10,43 +10,52 @@ MojoX::HTTP::Async
 
 use MojoX::HTTP::Async ();
 
-# создаёт объект для асинхронных запросов к одному домену
-my $ua = MojoX::HTTP::Async->new('host' => 'my-site.ru', 'slots' => 2);
+# creates new instance for async requests to the certain domain,
+# restricts max amount of simultaneously requests with 2 requests
+my $ua = MojoX::HTTP::Async->new('host' => 'my-site.com', 'slots' => 2);
 
-# заполняем слоты
+# let's fill slots
 $ua->add( '/page1.html?lang=en');
-$ua->add( 'http://my-site.ru/page2.html');
+$ua->add( 'http://my-site.com/page2.html');
 
-# можно использовать классы Mojo
-my $ua = MojoX::HTTP::Async->new('host' => 'my-site.ru', 'slots' => 2);
-$ua->add( '/page1.html?lang=en' );
-
-# заполним освободившиеся из-за таймаутов слоты новыми коннектами
-$ua->fill();
-
-# неблокирующая обработка
+# non-blocking requests processing
 while ( $ua->not_empty() ) {
-    if (my $tx = $ua->next_response) { # возвращает объект Mojo::Transaction::HTTP
+    if (my $tx = $ua->next_response) { # returns an instance of Mojo::Transaction::HTTP class
         print $tx->res->headers->as_string;
     } else {
         # do something else
     }
 }
 
-# блокирующая обработка
+# blocking requests processing
 while (my $tx = $ua->wait_for_next_response($timeout)) {
     # do something here
 }
 
-# обработка тайм-аута
+# how to process connect timeouts
 if (my $error = $tx->req()->error()) {
     say $error->{code},
     say $error->{message};
 }
 
+# how to process request timeouts and other errors sucn as broken pipes, etc
+if (my $error = $tx->res()->error()) {
+    say $error->{code},
+    say $error->{message};
+}
+
+# makes reconnection if either slot was timeouted or was inactive too long
+$ua->refresh_connections();
+
 =head1 DESCRIPTION
 
-Библиотека позволяет запрашивать ресурсы с какого-либо хоста в асинхронном режиме.
+This library allows to make multiple HTTP/HTTPS request to the particular host in non-blocking mode.
+
+In comparison with C<HTTP::Async>, this library doesn't make a new connection on each request.
+
+And in comparison with C<Mojo::AsyncAwait>, it's it's more intuitive how to use it, and there is no any Singleton restrictions.
+
+The instance of this class can work only with one domain and scheme: either HTTP or HTTPS.
 
 =cut
 
@@ -71,17 +80,19 @@ our $VERSION = 0.01;
 
 =head2 new($class, %opts)
 
-Конструктор
+The class constructor.
 
 =over
 
 =item host
 
-Обязательный параметр. Задаёт имя хоста, от которого требуется зщапрашивать ресурсы.
+It's the obligatory option.
+Sets the name/adress of remote host to be requested.
 
 =item port
 
-Задаёт номер порта. По умолчанию равно 80.
+By default it's equal to 80.
+Sets the port number of remote point.
 
 =item slots
 
