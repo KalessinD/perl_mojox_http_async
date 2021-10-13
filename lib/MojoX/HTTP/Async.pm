@@ -389,7 +389,6 @@ sub add ($self, $request_or_uri, $timeout = undef) {
             $request = Mojo::Message::Request->new();
             $request->url()->parse($request_or_uri);
         }
-        #elsif ( $request_or_uri && blessed($request_or_uri) && $request_or_uri->isa('Mojo::Message::Request') ) {
         if ($request) {
             $self->_send_request($slot, $request, $timeout);
             $status = 1;
@@ -466,7 +465,7 @@ sub _send_request ($self, $slot, $request, $timeout = undef) {
     }
 
     if (! $uri->scheme()) {
-        # URI::_generic не имеет метода host, так что зададим схему и поменяем тем самым тип
+        # URI::_generic doesn't have C<host> method, that's why we set the scheme by ourseleves to change C<$uri> type
         $uri->scheme($required_scheme);
     }
 
@@ -502,7 +501,6 @@ sub _send_request ($self, $slot, $request, $timeout = undef) {
         local $!;
 
         while ($sent_bytes < $msg_len && $attempts--) {
-            # never use "send" or "print"
             my $bytes = syswrite($socket, $plain_request, $msg_len, $sent_bytes);
 
             if ($! || ! defined($bytes)) {
@@ -544,7 +542,7 @@ sub _try_to_read ($self, $slot) {
 
         my $content = $response->content();
 
-        if ($content->is_finished()) { # эта проверка нужна для поддержки "Transfer-Encoding: chunked"
+        if ($content->is_finished()) { # this is required to support  "Transfer-Encoding: chunked"
             $slot->{'tx'} = Mojo::Transaction::HTTP->new(
                 'req' => $slot->{'request'},
                 'res' => $response
