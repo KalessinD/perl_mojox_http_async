@@ -722,7 +722,9 @@ sub refresh_connections ($self) {
 
 =head2 DESTROY($class)
 
-    деструктор
+The class destructor.
+
+Closes all opened sockets.
 
 =cut
 
