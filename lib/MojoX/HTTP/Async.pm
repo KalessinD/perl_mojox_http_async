@@ -96,25 +96,26 @@ Sets the port number of remote point.
 
 =item slots
 
-Задаёт количество слотов, по умолчанию равно 5.
-Будет сразу же создано заданное количество соединений.
+By default it's equal to 5.
+Sets the max amount slots.
+These slot will be filled one by one if required.
 
 =item ssl
 
-По-умолчанию равно 0. В таком режиме будут установлены только HTTP содинения.
-В противном случае будцт установлены HTTPS (SSL/TLS) соединения.
+By default it's equal to 0 (means HTTP).
+Sets the scheme of requests: HTTP or HTTPS.
 
 =item ssl_opts
 
-Ссылка на хеш с ключами для управления SSL (в том числе верификацией доменов и т.п.).
-См. параметры конструктора в документации "perldoc IO::Socket::SSL".
+It's a HashRef with options to control SSL Layer.
+See the constructor arguments of C<IO::Socket::SSL> for details.
 
 =item connect_timeout
 
-Время в секундах с точностью до микросекунд, ограничивающее время на соединение с сервером.
-По молчанию равно 1.
+By default it's equal to 1.
+Sets connection timeout in seconds (can be float with micro seconds accuracy).
 
-Есть будет задано в 0, то проверки на тайм-аут не будет.
+If it's equal to 0, then there will be no timeout restrictions.
 
 =item request_timeout
 
