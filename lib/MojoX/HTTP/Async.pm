@@ -615,7 +615,8 @@ sub wait_for_next_response ($self, $timeout = 0) {
 
 =head2 next_response ($self)
 
-Возвращает готовый объект C<Mojo::Transaction::HTTP>, если ответа нет, то вернёт C<undef>
+Returns an instance of C<Mojo::Transaction::HTTP> class.
+If there is no response, it will return C<undef>.
 
 =cut
 
