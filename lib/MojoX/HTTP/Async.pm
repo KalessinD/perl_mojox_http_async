@@ -119,10 +119,11 @@ If it's equal to 0, then there will be no timeout restrictions.
 
 =item request_timeout
 
-Время в секундах с точностью до микросекунд, огранчивающее общее время выполенния запроса.
-По молчанию равно 1.
+By default it's equal to 1
+Sets the time in seconds with granular accuracy as micro seconds.
+The awaiting time of response will be limited with this value.
 
-Есть будет задано в 0, то проверки на тайм-аут не будет.
+In case of 0 value there will be no time restrictions.
 
 =item sol_socket
 
