@@ -681,8 +681,11 @@ sub _get_response_from_ready_slot ($self) {
 
 =head2 refresh_connections ($self)
 
-    закрывает соединения, помеченные к тайм-ауту, и которые не использовались более C<inactivity_conn_ts>, и удаляет слоты с ними.
-    Так же закрываются соединения, где на текущий момент обнаруживаются какие-либо ошибки.
+Closes connections in slots in the following cases:
+
+1. The slot was marked as timeouted
+2. C<inactivity_conn_ts> was set and the connection was expired
+3. There are some errors in socket (for example: Connection reset by peer, Broken pipe, etc)
 
 =cut
 
