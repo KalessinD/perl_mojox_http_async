@@ -1,0 +1,11 @@
+MANIFEST.SKIP
+Build.PL
+Changes
+lib/MojoX/HTTP/Async.pm
+LICENSE
+MANIFEST
+README
+README.md
+META.json
+META.yml
+
