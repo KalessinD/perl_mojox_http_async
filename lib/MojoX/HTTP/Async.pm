@@ -127,27 +127,29 @@ In case of 0 value there will be no time restrictions.
 
 =item sol_socket
 
-Ссылка на хеш с параметрами сокета.
+It's a HashRef with socket options.
+THe possible keys are:
 
-Поддерживаемые ключи:
+=item B<so_keepalive>
 
-C<so_keepalive> - включает механизм TCP KeepAlive на сокете. По умочанию принимает значение 1 (включено);
+Enables TCP KeepAlive on socket.
+The default value is 1 (means that option is enabled).
 
-=item sol_tcp
+=item B<sol_tcp>
 
-WARNING: На некоторых ОС эти опции могут не поддерживаться системой.
+WARNING: These options can be unsupported on some OS platforms.
 
-Ссылка на хеш с TCP-параметрами сокета.
+It's a HashRef with socket TCP-options.
 
-Если какой-то из ключей не указан в хеше, то будут использованы системные настройки.
+If some key is absent in HashRef then system settings will be used.
 
-Поддерживаемые ключи:
+The supported key are shown below:
 
-C<tcp_keepidle> - интервал в секундах с момента последней активности в сокете до отправки пакета TCP KeepAlive;
+B<tcp_keepidle> - интервал в секундах с момента последней активности в сокете до отправки пакета TCP KeepAlive;
 
-C<tcp_keepintvl> - интервал в секундах между попытками получить ответ от второй стороны;
+B<tcp_keepintvl> - интервал в секундах между попытками получить ответ от второй стороны;
 
-C<tcp_keepcnt> - кол-во попыток получить ответ от второй стороны;
+B<tcp_keepcnt> - кол-во попыток получить ответ от второй стороны;
 
 Если эти параметры не заданы, и включена опция C<so_keepalive>, то будут использованы системные настройки.
 
@@ -427,7 +429,7 @@ sub _mark_slot_as_broken($self, $slot) {
 }
 
 sub _mark_request_as_broken ($self, $slot, $code = 520, $msg = 'Unknown Error') {
-    $self->_mark_slot_as_broken($slot);
+    $self->_mark_slot_as_broken($slot);li
     $slot->{'request'}->error({'message' => $msg, 'code' => $code});
 }
 
