@@ -145,23 +145,21 @@ If some key is absent in HashRef then system settings will be used.
 
 The supported key are shown below:
 
-B<tcp_keepidle> - интервал в секундах с момента последней активности в сокете до отправки пакета TCP KeepAlive;
+B<tcp_keepidle> - the time (in seconds) the connection needs to remain idle before TCP starts sending keepalive probes
 
-B<tcp_keepintvl> - интервал в секундах между попытками получить ответ от второй стороны;
+B<tcp_keepintvl> - the time (in seconds) between individual keepalive probes
 
-B<tcp_keepcnt> - кол-во попыток получить ответ от второй стороны;
-
-Если эти параметры не заданы, и включена опция C<so_keepalive>, то будут использованы системные настройки.
+B<tcp_keepcnt> - the maximum number of keepalive probes TCP should send before dropping the connection.
 
 =item inactivity_conn_ts
 
-Если последний ответ был получен более C<inactivity_conn_ts> секунд назад, то такой слот будет уничтожен в методе C<clear>.
+If last response was received C<inactivity_conn_ts> seconds or more ago, then such slots will be destroyed in C<clear> method.
 Если значение равно нулю (умолчание), то вышеописанная логика выключена.
 
 =item debug
 
-Включает отладочный вывод в STDERR.
-По умолчанию выключено.
+Enables debug mode. The dbug messages will be printed in STDERR.
+By default the value is 0 (disabled).
 
 =back
 
