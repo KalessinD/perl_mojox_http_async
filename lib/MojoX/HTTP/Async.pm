@@ -335,40 +335,45 @@ sub _get_free_slot ($self) {
 
 =head2 add ($self, $request_or_uri, $timeout = undef)
 
-публичный метод для выполнения HTTP запроса. Работает только с HTTP протоколом.
-В случае успешного добавления запроса в стек метод вернёт 1, иначе 0.
+Adss HTTP request into empty slot.
 
-Запрос может быть не добавлен в стек только в случае если нет свободных слотов и не получилось добавить один новый в
-рамках разшенного количества слотов (см. C<new> и C<slots>).
-Рекомендуется всегда проверять код возвратаа, и в случае, если запрос не был добавлен сразу - добавить его
-после обработки одного из ранее отправленных запросов.
+If the request was successfully added, then it will return 1. Otherwise it will return 0.
 
-    my $ua = MojoX::HTTP::Async->new('host' => 'my-host.ru', 'slots' => 1);
+The request can be not added into slot only in case, if there are no empty slots and new slot wasn't created due to
+the limit of slot's amount had been reached (see C<new> and C<slots>.
 
-    # заняли единственный слот
+It's recommendable always to check result code of this method.
+
+Example:
+
+    my $ua = MojoX::HTTP::Async->new('host' => 'my-host.com', 'slots' => 1);
+
+    # let's occupy the only slot
     $ua->add('/page1.html');
 
-    # ждём пока слот не освободится
+    # let's wait until it's become free again
     while ( ! $ua->add('/page2.html') ) {
         while (my $tx = $ua->wait_for_next_response() ) {
-            # do something with result
+            # do something here
         }
     }
 
 =over
 
-=item  $request_or_uri
+=item $request_or_uri
 
-Это может быть как объектом класса C<Mojo::Message::Request>, объектом класса C<Mojo::URL>, так и строкой, содержащей URI ресурса.
+It can be either an instance of C<Mojo::Message::Request> class, or an instance of C<Mojo::URL>.
+It also can be a simple URI srtring.
 
-Если ссылка на ресурс содержит хост, то он должен совпадать с заданным в конструкторе.
+If the resourse contains the host, then it must be the same as in the constructor C<new>.
 
-Если передан параметр в виде объекта класса C<Mojo::URL> или строки, то в качестве метода HTTP запроса будет использован метод GET.
+Using of string with URI or an instance of C<Mojo::URL> class assumes that GET HTTP method will be used.
 
 =item $timeout
 
-Время в секундах с точностью до микросекунд, ограничивающее время на соединение с сервером.
-По умолчанию будет использовано значение C<request_timeout> из конструктора.
+Time in seconds. Can be fractional with microseconds tolerance.
+
+The C<request_timeout> from conmtrucor will be used by default.
 
 =back
 
@@ -563,8 +568,8 @@ sub _try_to_read ($self, $slot) {
 
 =head2 not_empty($self)
 
-Возвращает 1 если есть хоть один из слотов (см. конструктор), где выполняется запрос или есть не обработанный ответ.
-Иначе вернёт 0.
+Returns 1 if there even one slot is busy or slot contains a not processed response.
+Otherwise the method returns 0.
 
 =cut
 
@@ -582,16 +587,19 @@ sub not_empty ($self) {
 
 =head2 wait_for_next_response($self, $timeout = 0)
 
-ждёт когда будет дсотупен ответ из какого-нибудь слота (см. конструктор),
-и вовзращает его в виде объекта C<Mojo::Transaction::HTTP>
+Waits for first received response or time-outed request in any slot.
+Returns the C<Mojo::Transaction::HTTP> instance with result.
 
 =over
 
 =item $timeout
 
-Время в секундах с точностью до микросекунд, которое следует ждать какого-либо ответа.
-По умолчанию равно 0. В этом случае будет блокирвока до тех пор, пока не будет получен ответ.
-Если все слоты (см. конструктор) пустые, то будет возвращено C<undef>.
+Period of time in seconds. Can be fractial with microsecond tollerance.
+The response will be marked as time-outed after this time is out.
+
+The default value is 0, which means that request will have been blocked until the response is received.
+
+If all slots are empty, then C<undef> will be returned.
 
 =back
 
