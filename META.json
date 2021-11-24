@@ -16,7 +16,8 @@
    "prereqs" : {
       "build" : {
          "requires" : {
-            "Test::More" : "0"
+            "Test::More" : 0,
+            "Test::TCP" : 0
          }
       },
       "configure" : {
@@ -26,8 +27,8 @@
       },
       "runtime" : {
          "requires" : {
-            "POSIX" : "0",
-            "perl" : "5.012001"
+            "POSIX" : 0,
+            "perl" : 5.012001
          }
       }
    },

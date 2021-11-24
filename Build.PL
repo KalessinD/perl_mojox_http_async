@@ -12,7 +12,7 @@ my $build = Module::Build->new(
         'Module::Build' => '0.19'
     },
     build_requires => {
-        'Test::HTTP::Server::Simple' => 0,
+        'Test::TCP' => 0,
         'Test::More' => 0,
     },
     requires => {

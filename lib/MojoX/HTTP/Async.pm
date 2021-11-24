@@ -21,7 +21,7 @@ $ua->add( 'http://my-site.com/page2.html');
 # non-blocking requests processing
 while ( $ua->not_empty() ) {
     if (my $tx = $ua->next_response) { # returns an instance of Mojo::Transaction::HTTP class
-        print $tx->res->headers->as_string;
+        print $tx->res->headers->to_string;
     } else {
         # do something else
     }
