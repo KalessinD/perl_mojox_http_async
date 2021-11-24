@@ -4,7 +4,7 @@ package MojoX::HTTP::Async;
 
 =head1 NAME
 
-MojoX::HTTP::Async
+MojoX::HTTP::Async - simple package to execute multiple parallel requests to the same host
 
 =head1 SYNOPSIS
 
