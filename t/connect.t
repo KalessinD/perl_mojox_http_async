@@ -11,33 +11,29 @@ use Test::More ('import' => [qw/ done_testing is ok use_ok note fail /]);
 
 my $processed_slots = 0;
 my $wait_timeout = 3;
-my $server;
+my $server = Test::TCP->new(
+    'listen' => 1,
+    'code' => sub {
+        my $socket = shift;
+        my $rh = '';
 
-{
-    $server = Test::TCP->new(
-        'listen' => 1,
-        'code' => sub {
-            my $socket = shift;
-            my $rh = '';
+        vec($rh, fileno($socket), 1) = 1;
 
-            vec($rh, fileno($socket), 1) = 1;
+        my ($wh, $eh) = ($rh) x 2;
 
-            my ($wh, $eh) = ($rh) x 2;
-
-            while (1) {
-                # IDK how to get and send response here yet
-                #select($rh, undef, undef, undef);
-                #my $data = <$socket>;
-                #select(undef, $wh, $eh, undef);
-                #note($!);
-                #if ( vec($error_handles, $slot_no, 1) != 0 )
-                #$socket->print("test");
-                #$socket->flush();
-                sleep(1);
-            }
-        },
-    );
-}
+        while (1) {
+            # IDK how to get and send response here yet
+            #select($rh, undef, undef, undef);
+            #my $data = <$socket>;
+            #select(undef, $wh, $eh, undef);
+            #note($!);
+            #if ( vec($error_handles, $slot_no, 1) != 0 )
+            #$socket->print("test");
+            #$socket->flush();
+            sleep(1);
+        }
+    },
+);
 
 BEGIN { use_ok('MojoX::HTTP::Async') };
 
@@ -86,6 +82,8 @@ while (my $tx = $ua->wait_for_next_response($wait_timeout)) {
 is($processed_slots, 1, "checking the amount of processed slots");
 
 done_testing();
+
+$server->stop();
 
 1;
 __END__
