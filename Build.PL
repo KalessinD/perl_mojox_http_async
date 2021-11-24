@@ -12,14 +12,8 @@ my $build = Module::Build->new(
         'Module::Build' => '0.19'
     },
     build_requires => {
-        'Data::Dumper' => 0,
-        'LWP::UserAgent' => 0,
-        'Net::EmptyPort' => 0,
-        'HTTP::Server::Simple::CGI'  => 0,
         'Test::HTTP::Server::Simple' => 0,
         'Test::More' => 0,
-        'Time::HiRes' => 0,
-        'LWP::UserAgent' => 0,
     },
     requires => {
         'perl'  => 5.012001,
