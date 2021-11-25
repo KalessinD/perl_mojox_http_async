@@ -16,8 +16,11 @@
    "prereqs" : {
       "build" : {
          "requires" : {
+            "Net::EmptyPort" : 0,
+            "Socket" : 0,
             "Test::More" : 0,
-            "Test::TCP" : 0
+            "Test::TCP" : 0,
+            "Time::HiRes" : 0
          }
       },
       "configure" : {
@@ -27,7 +30,19 @@
       },
       "runtime" : {
          "requires" : {
+            "Carp" : 0,
+            "Errno" : 0,
+            "Fcntl" : 0,
+            "IO::Socket::SSL" : 0,
+            "List::Util" : 0,
+            "Mojo::Message::Request" : 0,
+            "Mojo::Message::Response" : 0,
+            "Mojo::Transaction::HTTP" : 0,
             "POSIX" : 0,
+            "Scalar::Util" : 0,
+            "Socket" : 0,
+            "Time::HiRes" : 0,
+            "URI" : 0,
             "perl" : 5.012001
          }
       }
