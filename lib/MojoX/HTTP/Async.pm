@@ -338,7 +338,7 @@ sub _get_free_slot ($self) {
 
 =head2 add ($self, $request_or_uri, $timeout = undef)
 
-Adss HTTP request into empty slot.
+Adds HTTP request into empty slot.
 
 If the request was successfully added, then it will return 1.
 Otherwise it will return 0.
