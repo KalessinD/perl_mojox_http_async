@@ -47,6 +47,9 @@ if (my $error = $tx->res()->error()) {
 # makes reconnection if either slot was timeouted or was inactive too long
 $ua->refresh_connections();
 
+# close everything
+$ua->close_all();
+
 =head1 DESCRIPTION
 
 This library allows to make multiple HTTP/HTTPS request to the particular host in non-blocking mode.
@@ -730,6 +733,18 @@ sub refresh_connections ($self) {
     }
 
     return $n;
+}
+
+=head2 close_all ($self)
+
+Closes all opened connections and resets all slots with requests.
+
+=cut
+
+sub close_all ($self) {
+    $self->_clear_slot($_, 1) for $self->{'_conns'}->@*;
+    $self->{'_conns'} = [];
+    return;
 }
 
 =head2 DESTROY($class)
