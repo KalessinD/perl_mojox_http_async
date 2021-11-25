@@ -695,7 +695,7 @@ sub _get_response_from_ready_slot ($self) {
 Closes connections in slots in the following cases:
 
     1. The slot was marked as timeouted
-    2. C<inactivity_conn_ts> was set and the connection was expired
+    2. The "inactivity_conn_ts" was set and the connection was expired
     3. There are some errors in socket (for example: Connection reset by peer, Broken pipe, etc)
 
 =cut

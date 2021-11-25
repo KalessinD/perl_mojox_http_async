@@ -198,7 +198,7 @@
 
     1. The slot was marked as time-outed
 
-    2. "inactivity_conn_ts" was set and the connection was expired
+    2. The "inactivity_conn_ts" was set and the connection was expired
 
     3. There are some errors in socket (for example: Connection reset by peer, Broken pipe, etc)
 
