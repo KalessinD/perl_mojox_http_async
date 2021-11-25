@@ -44,14 +44,7 @@ my $server = Test::TCP->new(
         my %responses_by_request_number = (
             '01' => "HTTP/1.1 200 OK\r\nContent-Length: 10\r\n\r\n0123456789",
             '02' => "HTTP/1.1 200 OK\r\nContent-Length: 10\r\n\r\n9876543210",
-            '03' => $default_response,
-            '04' => $default_response,
             '05' => "HTTP/1.1 200 OK\r\nContent-Length: 15\r\n\r\nHello, world!!!",
-            '06' => $default_response,
-            '07' => $default_response,
-            '08' => $default_response,
-            '09' => $default_response,
-            '10' => $default_response,
         );
 
         while (my $peer = accept($client, $socket)) {
