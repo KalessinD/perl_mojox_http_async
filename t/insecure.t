@@ -34,10 +34,10 @@ my $server = Test::TCP->new(
         setsockopt($socket, SOL_SOCKET, SO_REUSEADDR, 1);
 
         my $QUEUE_LENGTH = 3;
-        my $my_addr = sockaddr_in($server_port, INADDR_ANY);
+        my $my_addr = sockaddr_in($port, INADDR_ANY);
 
-        bind($socket, $my_addr ) or die( qq(Couldn't bind socket to port $server_port: $!\n));
-        listen($socket, $QUEUE_LENGTH) or die( "Couldn't listen port $server_port: $!\n" );
+        bind($socket, $my_addr ) or die( qq(Couldn't bind socket to port $port: $!\n));
+        listen($socket, $QUEUE_LENGTH) or die( "Couldn't listen port $port: $!\n" );
 
         my $client;
         my $default_response = "HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n";
