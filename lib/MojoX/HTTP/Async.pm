@@ -166,8 +166,6 @@ By default the value is 0 (disabled).
 
 =back
 
-=back
-
 =cut
 
 sub new ($class, %opts) {
