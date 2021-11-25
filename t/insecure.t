@@ -135,9 +135,9 @@ while ( $ua->not_empty() ) {
         is($res->code(), '200', 'checking the response code');
         is($res->message(), 'OK', 'checking the response message');
         if ($tx->req()->url() =~ m#/01\.html$#) {
-            is($res->body(), '0123456789', "checking response body");
+            is($res->body(), '0123456789', "checking the response body");
         } else {
-            is($res->body(), '9876543210', "checking response body");
+            is($res->body(), '9876543210', "checking the response body");
         }
     } else {
         # waiting for a response
@@ -157,7 +157,7 @@ $processed_slots = 0;
 while (my $tx = $ua->wait_for_next_response($wait_timeout)) {
     $processed_slots++;
     my $res = $tx->res();
-    is($res->body(), '', "checking response body");
+    is($res->body(), '', "checking the response body");
     is($res->message(), 'Request timeout', 'checking the response message');
     is($res->code(), '524', 'checking the response code');
 }
@@ -177,10 +177,10 @@ while (my $tx = $ua->wait_for_next_response($wait_timeout)) {
     $processed_slots++;
     my $res = $tx->res();
     if ($tx->req()->url() =~ m#/05\.html$#) {
-        is($res->body(), 'Hello, world!!!', "checking response body");
+        is($res->body(), 'Hello, world!!!', "checking the response body");
         is($res->message(), 'OK', 'checking the response message');
     } else {
-        is($res->body(), '', "checking response body");
+        is($res->body(), '', "checking the response body");
         is($res->message(), 'Request timeout', 'checking the response message');
     }
 }
@@ -199,7 +199,7 @@ ok($ua->add("/page/08.html"), "Adding the eight request");
 while (my $tx = $ua->wait_for_next_response($wait_timeout)) {
     $processed_slots++;
     my $res = $tx->res();
-    is($res->body(), '', "checking response body");
+    is($res->body(), '', "checking the response body");
     is($res->message(), 'Request timeout', 'checking the response message');
 }
 
