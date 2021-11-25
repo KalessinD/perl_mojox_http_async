@@ -6,7 +6,7 @@ SYNOPSIS
     use MojoX::HTTP::Async ();
 
     # creates new instance for async requests to the certain domain,
-    # restricts max amount of simultaneously requests with 2 requests
+    # restricts max amount of simultaneously executed requests
     my $ua = MojoX::HTTP::Async->new('host' => 'my-site.com', 'slots' => 2);
 
     # let's fill slots
@@ -25,8 +25,11 @@ SYNOPSIS
     # blocking requests processing while (my $tx =
     $ua->wait_for_next_response($timeout)) { # do something here }
 
-    # how to process connect timeouts if (my $error = $tx->req()->error()) {
-    say $error->{code}, say $error->{message}; }
+    # how to process connect timeouts
+    if (my $error = $tx->req()->error()) {
+        say $error->{code};
+        say $error->{message};
+    }
 
     # how to process request timeouts and other errors sucn as broken pipes, etc
     if (my $error = $tx->res()->error()) {
@@ -114,8 +117,8 @@ DESCRIPTION
 
     inactivity_conn_ts
         If last response was received "inactivity_conn_ts" seconds or more
-        ago, then such slots will be destroyed in "clear" method. Если
-        значение равно нулю (умолчание), то вышеописанная логика выключена.
+        ago, then such slots will be destroyed in "clear" method.
+        By default the value is 0 (disabled).
 
     debug
         Enables debug mode. The dbug messages will be printed in STDERR. By

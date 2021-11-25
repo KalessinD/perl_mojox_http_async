@@ -9,7 +9,7 @@
     use MojoX::HTTP::Async ();
 
     # creates new instance for async requests to the certain domain,
-    # restricts max amount of simultaneously requests with 2 requests
+    # restricts max amount of simultaneously executed requests
     my $ua = MojoX::HTTP::Async->new('host' => 'my-site.com', 'slots' => 2);
 
     # let's fill slots
@@ -28,8 +28,11 @@
     # blocking requests processing while (my $tx =
     $ua->wait_for_next_response($timeout)) { # do something here }
 
-    # how to process connect timeouts if (my $error = $tx->req()->error()) {
-    say $error->{code}, say $error->{message}; }
+    # how to process connect timeouts
+    if (my $error = $tx->req()->error()) {
+        say $error->{code};
+        say $error->{message};
+    }
 
     # how to process request timeouts and other errors sucn as broken pipes, etc
     if (my $error = $tx->res()->error()) {

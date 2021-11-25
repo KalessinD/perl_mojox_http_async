@@ -8,47 +8,47 @@ MojoX::HTTP::Async - simple package to execute multiple parallel requests to the
 
 =head1 SYNOPSIS
 
-use MojoX::HTTP::Async ();
+    use MojoX::HTTP::Async ();
 
-# creates new instance for async requests to the certain domain,
-# restricts max amount of simultaneously requests with 2 requests
-my $ua = MojoX::HTTP::Async->new('host' => 'my-site.com', 'slots' => 2);
+    # creates new instance for async requests
+    # restricts max amount of simultaneously executed requests
+    my $ua = MojoX::HTTP::Async->new('host' => 'my-site.com', 'slots' => 2);
 
-# let's fill slots
-$ua->add( '/page1.html?lang=en');
-$ua->add( 'http://my-site.com/page2.html');
+    # let's fill slots
+    $ua->add( '/page1.html?lang=en');
+    $ua->add( 'http://my-site.com/page2.html');
 
-# non-blocking requests processing
-while ( $ua->not_empty() ) {
-    if (my $tx = $ua->next_response) { # returns an instance of Mojo::Transaction::HTTP class
-        print $tx->res->headers->to_string;
-    } else {
-        # do something else
+    # non-blocking requests processing
+    while ( $ua->not_empty() ) {
+        if (my $tx = $ua->next_response) { # returns an instance of Mojo::Transaction::HTTP class
+            print $tx->res->headers->to_string;
+        } else {
+            # do something else
+        }
     }
-}
 
-# blocking requests processing
-while (my $tx = $ua->wait_for_next_response($timeout)) {
-    # do something here
-}
+    # blocking requests processing
+    while (my $tx = $ua->wait_for_next_response($timeout)) {
+        # do something here
+    }
 
-# how to process connect timeouts
-if (my $error = $tx->req()->error()) {
-    say $error->{code},
-    say $error->{message};
-}
+    # how to process connect timeouts
+    if (my $error = $tx->req()->error()) {
+        say $error->{code};
+        say $error->{message};
+    }
 
-# how to process request timeouts and other errors sucn as broken pipes, etc
-if (my $error = $tx->res()->error()) {
-    say $error->{code},
-    say $error->{message};
-}
+    # how to process request timeouts and other errors sucn as broken pipes, etc
+    if (my $error = $tx->res()->error()) {
+        say $error->{code};
+        say $error->{message};
+    }
 
-# makes reconnection if either slot was timeouted or was inactive too long
-$ua->refresh_connections();
+    # makes reconnection if either slot was timeouted or was inactive too long
+    $ua->refresh_connections();
 
-# close everything
-$ua->close_all();
+    # close everything
+    $ua->close_all();
 
 =head1 DESCRIPTION
 
@@ -79,7 +79,7 @@ use URI ();
 use Scalar::Util qw/ blessed /;
 use Errno qw / :POSIX /;
 
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 
 =head2 new($class, %opts)
 
@@ -156,8 +156,10 @@ B<tcp_keepcnt> - the maximum number of keepalive probes TCP should send before d
 
 =item inactivity_conn_ts
 
-If last response was received C<inactivity_conn_ts> seconds or more ago, then such slots will be destroyed in C<clear> method.
-Если значение равно нулю (умолчание), то вышеописанная логика выключена.
+If last response was received C<inactivity_conn_ts> seconds or more ago,
+then such slots will be destroyed in C<clear> method.
+
+By default the value is 0 (disabled).
 
 =item debug
 
@@ -338,7 +340,8 @@ sub _get_free_slot ($self) {
 
 Adss HTTP request into empty slot.
 
-If the request was successfully added, then it will return 1. Otherwise it will return 0.
+If the request was successfully added, then it will return 1.
+Otherwise it will return 0.
 
 The request can be not added into slot only in case, if there are no empty slots and new slot wasn't created due to
 the limit of slot's amount had been reached (see C<new> and C<slots>.
@@ -691,9 +694,9 @@ sub _get_response_from_ready_slot ($self) {
 
 Closes connections in slots in the following cases:
 
-1. The slot was marked as timeouted
-2. C<inactivity_conn_ts> was set and the connection was expired
-3. There are some errors in socket (for example: Connection reset by peer, Broken pipe, etc)
+    1. The slot was marked as timeouted
+    2. C<inactivity_conn_ts> was set and the connection was expired
+    3. There are some errors in socket (for example: Connection reset by peer, Broken pipe, etc)
 
 =cut
 
