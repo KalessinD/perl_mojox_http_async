@@ -93,9 +93,9 @@ DESCRIPTION
     sol_socket
         It's a HashRef with socket options. THe possible keys are:
 
-    so_keepalive
-        Enables TCP KeepAlive on socket. The default value is 1 (means that
-        option is enabled).
+        so_keepalive
+            Enables TCP KeepAlive on socket. The default value is 1 (means that
+            option is enabled).
 
     sol_tcp
         WARNING: These options can be unsupported on some OS platforms.
@@ -106,14 +106,16 @@ DESCRIPTION
 
         The supported key are shown below:
 
-        tcp_keepidle - the time (in seconds) the connection needs to remain
-        idle before TCP starts sending keepalive probes
+        tcp_keepidle
+            the time (in seconds) the connection needs to remain
+            idle before TCP starts sending keepalive probes
 
-        tcp_keepintvl - the time (in seconds) between individual keepalive
-        probes
+        tcp_keepintvl
+            the time (in seconds) between individual keepalive probes
 
-        tcp_keepcnt - the maximum number of keepalive probes TCP should send
-        before dropping the connection.
+        tcp_keepcnt
+            the maximum number of keepalive probes TCP should send
+            before dropping the connection.
 
     inactivity_conn_ts
         If last response was received "inactivity_conn_ts" seconds or more
@@ -125,7 +127,7 @@ DESCRIPTION
         default the value is 0 (disabled).
 
   add ($self, $request_or_uri, $timeout = undef)
-    Adss HTTP request into empty slot.
+    Adds HTTP request into empty slot.
 
     If the request was successfully added, then it will return 1. Otherwise
     it will return 0.
