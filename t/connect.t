@@ -5,6 +5,7 @@ use utf8;
 use strict;
 use warnings;
 use experimental qw/ signatures /;
+use bytes ();
 
 use lib 'lib/';
 
@@ -36,12 +37,12 @@ my $server = Test::TCP->new(
         listen($socket, $QUEUE_LENGTH) or die( "Couldn't listen port $server_port: $!\n" );
 
         my $client;
-        my $default_response = "HTTP 200 OK\r\nContent-Length: 0\r\n\r\n";
+        my $default_response = "HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n";
         my %responses_by_request_number = (
-            '01' => "HTTP 200 OK\r\nContent-Length: 10\r\n\r\n0123456789",
-            '02' => "HTTP 200 OK\r\nContent-Length: 10\r\n\r\n9876543210",
+            '01' => "HTTP/1.1 200 OK\r\nContent-Length: 10\r\n\r\n0123456789",
+            '02' => "HTTP/1.1 200 OK\r\nContent-Length: 10\r\n\r\n9876543210",
             '03' => $default_response,
-            '04' => "HTTP 200 OK\r\nContent-Length: 15\r\n\r\nHello, world!!!",
+            '04' => "HTTP/1.1 200 OK\r\nContent-Length: 15\r\n\r\nHello, world!!!",
         );
 
         while (my $peer = accept($client, $socket)) {
@@ -52,14 +53,20 @@ my $server = Test::TCP->new(
                 sleep(0.05);
             } elsif ($pid == 0) { # child
                 close($socket);
-                select($client);
 
                 local $| = 1; # autoflush
+                local $SIG{'__DIE__'} = 'DEFAULT';
 
-                #my $rh = '';
-                #vec($rh, fileno($client), 1) = 1;
-                #my ($wh, $eh) = ($rh) x 2;
-                #if ( vec($error_handles, $slot_no, 1) != 0 )
+                my $rh = '';
+                vec($rh, fileno($client), 1) = 1;
+                my ($wh, $eh) = ($rh) x 2;
+
+                select($rh, undef, $eh, undef);
+
+                if ( vec($eh, fileno($client), 1) != 0 ) {
+                    die($!);
+                    exit(0);
+                }
 
                 my $data = <$client>; # GET /page/01.html HTTP/1.1
                 my ($page) = (($data // '') =~ m#^[A-Z]{3,}\s/page/([0-9]+)\.html#);
@@ -67,7 +74,21 @@ my $server = Test::TCP->new(
 
                 $response = $responses_by_request_number{$page} // $response if $page;
 
-                print $client $response;
+                $eh = $wh;
+
+                select(undef, $wh, $eh, undef);
+
+                if ( vec($eh, fileno($client), 1) != 0 ) {
+                    die($!);
+                    exit(0);
+                }
+
+                my $bytes = syswrite($client, $response, bytes::length($response), 0);
+
+                warn("Can't send the response") if $bytes != bytes::length($response);
+
+                #print $client $response;
+                sleep(0.01);
                 close($client);
                 exit(0);
             } else {
@@ -84,7 +105,7 @@ my $ua = MojoX::HTTP::Async->new(
     'port' => $server->port(),
     'slots' => 2,
     'connect_timeout' => 1,
-    'request_timeout' => 2,
+    'request_timeout' => 3,
     'ssl' => 0,
     'sol_socket' => {},
     'sol_tcp' => {},
@@ -99,9 +120,13 @@ ok(!$ua->add("/page/03.html"), "Adding the third request");
 while ( $ua->not_empty() ) {
     if (my $tx = $ua->next_response) { # returns an instance of Mojo::Transaction::HTTP class
         my $res = $tx->res()->headers()->to_string();
-        is($res, 'Content-Length: 0', "checking the empty response");
+        is($res, 'Content-Length: 10', "checking the empty response");
         $processed_slots++;
-        #note($tx->res()->to_string);
+        if ($tx->req()->url() =~ m#/01\.html$#) {
+            is($tx->res()->body(), '0123456789', "checking response body");
+        } else {
+            is($tx->res()->body(), '9876543210', "checking response body");
+        }
     } else {
         # waiting for a response
     }
