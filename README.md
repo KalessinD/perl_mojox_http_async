@@ -8,9 +8,9 @@
 ```perl
     use MojoX::HTTP::Async ();
 
-    # creates new instance for async requests to the certain domain, #
-    restricts max amount of simultaneously requests with 2 requests my $ua =
-    MojoX::HTTP::Async->new('host' => 'my-site.com', 'slots' => 2);
+    # creates new instance for async requests to the certain domain,
+    # restricts max amount of simultaneously requests with 2 requests
+    my $ua = MojoX::HTTP::Async->new('host' => 'my-site.com', 'slots' => 2);
 
     # let's fill slots
     $ua->add('/page1.html?lang=en');
