@@ -100,8 +100,7 @@ my $server = Test::TCP->new(
 
                 warn("Can't send the response") if $bytes != bytes::length($response);
 
-                #print $client $response;
-                sleep(0.01);
+                sleep(0.1);
                 close($client);
                 exit(0);
             } else {
