@@ -1,11 +1,11 @@
-MANIFEST.SKIP
 Build.PL
 Changes
-lib/MojoX/HTTP/Async.pm
 LICENSE
 MANIFEST
-README
-README.md
+MANIFEST.SKIP
 META.json
 META.yml
-
+README
+README.md
+t/insecure.t
+lib/MojoX/HTTP/Async.pm
