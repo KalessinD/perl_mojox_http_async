@@ -26,7 +26,7 @@ my $server = Test::TCP->new(
     'max_wait' => 10,
     'host'     => 'localhost',
     'listen'   => 0,
-    'proto'    => 'tcp',  # accept(sock, QUEUEE_LENGTH= 5)
+    'proto'    => 'tcp',
     'port'     => $server_port,
     'code'     => sub ($port) {
 
@@ -74,7 +74,6 @@ my $server = Test::TCP->new(
 
                 if ( vec($eh, fileno($client), 1) != 0 ) {
                     die($!);
-                    exit(0);
                 }
 
                 my $data = <$client>; # GET /page/01.html HTTP/1.1
@@ -89,7 +88,6 @@ my $server = Test::TCP->new(
 
                 if ( vec($eh, fileno($client), 1) != 0 ) {
                     die($!);
-                    exit(0);
                 }
 
                 if ($page && ($page eq '06' || $page eq '07' || $page eq '08')) { # tests for request timeouts
