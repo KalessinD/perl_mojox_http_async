@@ -111,7 +111,7 @@ Sets the scheme of requests: HTTP or HTTPS.
 =item ssl_opts
 
 It's a HashRef with options to control SSL Layer.
-See the constructor arguments of C<IO::Socket::SSL> for details.
+See C<IO::Socket::SSL> constructor arguments for details.
 
 =item connect_timeout
 

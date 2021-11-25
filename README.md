@@ -77,7 +77,7 @@
 
 ###### ssl_opts
         It's a HashRef with options to control SSL Layer.
-        See the constructor arguments of "IO::Socket::SSL" for details.
+        See the "IO::Socket::SSL" constructor arguments for details.
 
 ###### connect_timeout
         By default it's equal to 1.
