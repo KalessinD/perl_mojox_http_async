@@ -12,13 +12,18 @@
     restricts max amount of simultaneously requests with 2 requests my $ua =
     MojoX::HTTP::Async->new('host' => 'my-site.com', 'slots' => 2);
 
-    # let's fill slots $ua->add( '/page1.html?lang=en'); $ua->add(
-    'http://my-site.com/page2.html');
+    # let's fill slots
+    $ua->add('/page1.html?lang=en');
+    $ua->add('http://my-site.com/page2.html');
 
-    # non-blocking requests processing while ( $ua->not_empty() ) { if (my
-    $tx = $ua->next_response) { # returns an instance of
-    Mojo::Transaction::HTTP class print $tx->res->headers->to_string; } else
-    { # do something else } }
+    # non-blocking requests processing
+    while ( $ua->not_empty() ) {
+        if (my $tx = $ua->next_response) { # returns an instance of Mojo::Transaction::HTTP class
+            print $tx->res->headers->to_string;
+        } else {
+            # do something else
+        }
+    }
 
     # blocking requests processing while (my $tx =
     $ua->wait_for_next_response($timeout)) { # do something here }
@@ -26,14 +31,17 @@
     # how to process connect timeouts if (my $error = $tx->req()->error()) {
     say $error->{code}, say $error->{message}; }
 
-    # how to process request timeouts and other errors sucn as broken pipes,
-    etc if (my $error = $tx->res()->error()) { say $error->{code}, say
-    $error->{message}; }
+    # how to process request timeouts and other errors sucn as broken pipes, etc
+    if (my $error = $tx->res()->error()) {
+        say $error->{code};
+        say $error->{message};
+    }
 
-    # makes reconnection if either slot was timeouted or was inactive too
-    long $ua->refresh_connections();
+    # makes reconnection if either slot was timeouted or was inactive too long
+    $ua->refresh_connections();
 
-    # close everything $ua->close_all();
+    # close everything
+    $ua->close_all();
 ```
 
 ### DESCRIPTION
