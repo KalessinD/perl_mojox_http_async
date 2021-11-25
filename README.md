@@ -11,7 +11,6 @@
     # creates new instance for async requests to the certain domain,
     # restricts max amount of simultaneously executed requests
     my $ua = MojoX::HTTP::Async->new('host' => 'my-site.com', 'slots' => 2);
-
     # let's fill slots
     $ua->add('/page1.html?lang=en');
     $ua->add('http://my-site.com/page2.html');
@@ -132,7 +131,7 @@
         By default the value is 0 (disabled).
 
 ##### add ($self, $request_or_uri, $timeout = undef)
-    Ads HTTP request into empty slot.
+    Adds HTTP request into empty slot.
 
     If the request was successfully added, then it will return 1. Otherwise
     it will return 0.
