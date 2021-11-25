@@ -62,39 +62,43 @@
     The class constructor.
 
 ###### host
-        It's the obligatory option. Sets the name/adress of remote host to
-        be requested.
+        It's the obligatory option.
+        Sets the name/adress of remote host to be requested.
 
 ###### port
         By default it's equal to 80. Sets the port number of remote point.
 
 ###### slots
-        By default it's equal to 5. Sets the max amount slots. These slot will be filled one by one if required.
+        By default it's equal to 5. Sets the max amount slots.
+        These slot will be filled one by one if required.
 
 ###### ssl
-        By default it's equal to 0 (means HTTP). Sets the scheme of requests: HTTP or HTTPS.
+        By default it's equal to 0 (means HTTP).
+        Sets the scheme of requests: HTTP or HTTPS.
 
 ###### ssl_opts
-        It's a HashRef with options to control SSL Layer. See the constructor arguments of "IO::Socket::SSL" for details.
+        It's a HashRef with options to control SSL Layer.
+        See the constructor arguments of "IO::Socket::SSL" for details.
 
 ###### connect_timeout
-        By default it's equal to 1. Sets connection timeout in seconds (can be float with micro seconds accuracy).
+        By default it's equal to 1.
+        Sets connection timeout in seconds (can be float with micro seconds accuracy).
 
         If it's equal to 0, then there will be no timeout restrictions.
 
 ###### request_timeout
         By default it's equal to 1 Sets the time in seconds with granular
-        accuracy as micro seconds. The awaiting time of response will be
-        limited with this value.
+        accuracy as micro seconds.
+        The awaiting time of response will be limited with this value.
 
         In case of 0 value there will be no time restrictions.
 
 ###### sol_socket
         It's a HashRef with socket options. THe possible keys are:
 
-###### so_keepalive
-        Enables TCP KeepAlive on socket. The default value is 1 (means that
-        option is enabled).
+        so_keepalive
+            Enables TCP KeepAlive on socket.
+            The default value is 1 (means that option is enabled).
 
 ###### sol_tcp
         WARNING: These options can be unsupported on some OS platforms.
@@ -105,14 +109,16 @@
 
         The supported key are shown below:
 
-        tcp_keepidle - the time (in seconds) the connection needs to remain
-        idle before TCP starts sending keepalive probes
+        tcp_keepidle
+            the time (in seconds) the connection needs to remain
+            idle before TCP starts sending keepalive probes
 
-        tcp_keepintvl - the time (in seconds) between individual keepalive
-        probes
+        tcp_keepintvl
+            the time (in seconds) between individual keepalive probes
 
-        tcp_keepcnt - the maximum number of keepalive probes TCP should send
-        before dropping the connection.
+        tcp_keepcnt
+            the maximum number of keepalive probes TCP should send
+            before dropping the connection.
 
 ###### inactivity_conn_ts
         If last response was received "inactivity_conn_ts" seconds or more
