@@ -68,7 +68,7 @@
         By default it's equal to 80. Sets the port number of remote point.
 
 ###### slots
-        By default it's equal to 5. Sets the max amount slots.
+        By default it's equal to 5. Sets the maximum amount of slots.
         These slot will be filled one by one if required.
 
 ###### ssl

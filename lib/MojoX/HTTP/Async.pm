@@ -100,7 +100,7 @@ Sets the port number of remote point.
 =item slots
 
 By default it's equal to 5.
-Sets the max amount slots.
+Sets the maximum amount of slots.
 These slot will be filled one by one if required.
 
 =item ssl
