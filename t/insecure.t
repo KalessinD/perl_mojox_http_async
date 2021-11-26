@@ -119,7 +119,7 @@ my $mojo_request = Mojo::Message::Request->new();
 
 $mojo_request->parse("POST /page/01.html HTTP/1.1\r\nContent-Length: 3\r\nHost: localhost\r\nUser-Agent: Test\r\n\r\nabc");
 
-ok( $mojo_request, "Adding the first request");
+ok( $ua->add($mojo_request), "Adding the first request");
 ok( $ua->add("/page/02.html"), "Adding the second request");
 ok(!$ua->add("/page/03.html"), "Adding the third request");
 
