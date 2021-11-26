@@ -47,9 +47,13 @@ my $server = Test::TCP->new(
             '02' => "HTTP/1.1 200 OK\r\nContent-Length: 10\r\n\r\n9876543210",
         );
 
-        while (my $client = $socket->accept()) {
+        while (1) {
 
             my $pid;
+            my $client = $socket->accept();
+
+            die("failed to accept or SSL handshake: ${!}, ${IO::Socket::SSL::SSL_ERROR}") if $!;
+            sleep(0.1) && next if !$client;
 
             if ($pid = fork()) { # parent
                 sleep(0.05);
