@@ -65,9 +65,7 @@ my $server = Test::TCP->new(
 
                 select($rh, undef, $eh, undef);
 
-                if ( vec($eh, fileno($client), 1) != 0 ) {
-                    die($!);
-                }
+                die($!) if ( vec($eh, fileno($client), 1) != 0 );
 
                 my $data = <$client>; # GET /page/01.html HTTP/1.1
                 my ($page) = (($data // '') =~ m#^[A-Z]{3,}\s/page/([0-9]+)\.html#);
@@ -79,9 +77,7 @@ my $server = Test::TCP->new(
 
                 select(undef, $wh, $eh, undef);
 
-                if ( vec($eh, fileno($client), 1) != 0 ) {
-                    die($!);
-                }
+                die($!) if ( vec($eh, fileno($client), 1) != 0 );
 
                 if ($page && ($page eq '06' || $page eq '07' || $page eq '08')) { # tests for request timeouts
                     sleep($request_timeout + 0.1);
