@@ -115,7 +115,11 @@ my $ua = MojoX::HTTP::Async->new(
     'inactivity_conn_ts' => $inactivity_timeout,
 );
 
-ok( $ua->add("/page/01.html"), "Adding the first request");
+my $mojo_request = Mojo::Message::Request->new();
+
+$mojo_request->parse("POST /page/01.html HTTP/1.1\r\nContent-Length: 3\r\nHost: localhost\r\nUser-Agent: Test\r\n\r\nabc");
+
+ok( $mojo_request, "Adding the first request");
 ok( $ua->add("/page/02.html"), "Adding the second request");
 ok(!$ua->add("/page/03.html"), "Adding the third request");
 
@@ -206,7 +210,7 @@ $processed_slots = 0;
 
 $ua->refresh_connections();
 
-ok($ua->add("/page/10.html"), "Adding the eight request");
+ok($ua->add("/page/10.html"), "Adding the tenth request");
 
 while (my $tx = $ua->wait_for_next_response($wait_timeout)) {
     $processed_slots++;
