@@ -17,6 +17,7 @@ use Socket qw/ sockaddr_in AF_INET INADDR_ANY SOCK_STREAM SOL_SOCKET SO_REUSEADD
 use Net::EmptyPort qw/ empty_port /;
 use IO::Socket::SSL ();
 use IO::Socket::SSL qw/ SSL_VERIFY_NONE /;
+use FindBin qw/ $Bin /;
 
 my $server_port = empty_port({ host => 'localhost' });
 my $processed_slots = 0;
@@ -34,11 +35,11 @@ my $server = Test::TCP->new(
 
         my $QUEUE_LENGTH = 3;
         my $socket = IO::Socket::SSL->new(
-               'LocalAddr' => 'localhost',
-               'LocalPort' => $port,
-               'Listen'    => $QUEUE_LENGTH,
-               #'SSL_cert_file' => 'server-cert.pem',
-               #'SSL_key_file' => 'server-key.pem',
+            'LocalAddr' => 'localhost',
+            'LocalPort' => $port,
+            'Listen'    => $QUEUE_LENGTH,
+            'SSL_cert_file' => "${Bin}/certs/server-cert.pem",
+            'SSL_key_file' => "${Bin}/certs/server-key.pem",
         );
 
         my $default_response = "HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n";
@@ -116,7 +117,7 @@ my $ua = MojoX::HTTP::Async->new(
     'ssl' => 1,
     'ssl_opts' => {
         'SSL_verify_mode' => &SSL_VERIFY_NONE,
-        'verify_hostname' => &SSL_VERIFY_NONE
+        #'verify_hostname' => &SSL_VERIFY_NONE
     },
     'sol_socket' => {},
     'sol_tcp' => {},

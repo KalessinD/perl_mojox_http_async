@@ -1,4 +1,5 @@
 !Build/
+.vstags
 .last_cover_stats
 /MYMETA.*
 *.o

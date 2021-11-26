@@ -17,6 +17,7 @@ my $build = Module::Build->new(
         'Net::EmptyPort' => 0,
         'Time::HiRes' => 0,
         'Socket' => 0,
+        'FindBin' => 0,
     },
     requires => {
         'perl'  => 5.012001,
