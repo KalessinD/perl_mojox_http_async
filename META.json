@@ -63,6 +63,6 @@
          "url" : "https://github.com/KalessinD/perl_mojox_http_async"
       }
    },
-   "version" : "0.01",
+   "version" : "0.06",
    "x_serialization_backend" : "JSON::PP version 4.05"
 }

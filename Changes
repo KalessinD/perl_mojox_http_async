@@ -1,6 +1,9 @@
 Changes
 =======
 
+0.06 2021 Nov 27                                                                                                                                                                                                    
+    - updating test certs due to some OpenSSl version don't accept the initial ones
+
 0.05 2021 Nov 27
     - updating POD
     - updating META-files
