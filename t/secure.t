@@ -40,7 +40,7 @@ my $server = Test::TCP->new(
             'Listen'    => $QUEUE_LENGTH,
             'SSL_cert_file' => "${Bin}/certs/server-cert.pem",
             'SSL_key_file' => "${Bin}/certs/server-key.pem",
-        );
+        ) or die "Can't create socket: $!";
 
         my $default_response = "HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n";
         my %responses_by_request_number = (
