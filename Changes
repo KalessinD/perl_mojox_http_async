@@ -1,6 +1,9 @@
 Changes
 =======
 
+0.07 2021 Nov 27
+    - fix version in meta-files
+
 0.06 2021 Nov 27                                                                                                                                                                                                    
     - updating test certs due to some OpenSSl version don't accept the initial ones
 

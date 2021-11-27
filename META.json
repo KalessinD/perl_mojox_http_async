@@ -51,7 +51,7 @@
    "provides" : {
       "MojoX::HTTP::Async" : {
          "file" : "lib/MojoX/HTTP/Async.pm",
-         "version" : "0.05"
+         "version" : "0.07"
       }
    },
    "release_status" : "stable",
@@ -63,6 +63,6 @@
          "url" : "https://github.com/KalessinD/perl_mojox_http_async"
       }
    },
-   "version" : "0.06",
+   "version" : "0.07",
    "x_serialization_backend" : "JSON::PP version 4.05"
 }

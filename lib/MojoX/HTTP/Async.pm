@@ -85,7 +85,7 @@ use URI ();
 use Scalar::Util qw/ blessed /;
 use Errno qw / :POSIX /;
 
-our $VERSION = 0.06;
+our $VERSION = 0.07;
 
 =head2 new($class, %opts)
 
