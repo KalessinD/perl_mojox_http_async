@@ -1,6 +1,12 @@
 Changes
 =======
 
+0.05 2021 Nov 27
+    - updating POD
+    - updating META-files
+    - fixes in MANIFEST.SKIP file
+    - making the "t/insecure.t" test more stable
+
 0.04 2021 Nov 25
     - adding test cases
 

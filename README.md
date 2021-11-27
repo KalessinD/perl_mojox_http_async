@@ -7,13 +7,16 @@
 
 ```perl
     use MojoX::HTTP::Async ();
+    use Mojo::Message::Request ();
 
     # creates new instance for async requests to the certain domain,
     # restricts max amount of simultaneously executed requests
     my $ua = MojoX::HTTP::Async->new('host' => 'my-site.com', 'slots' => 2);
+
     # let's fill slots
     $ua->add('/page1.html?lang=en');
     $ua->add('http://my-site.com/page2.html');
+    $ua->add( Mojo::Message::Request->new() );
 
     # non-blocking requests processing
     while ( $ua->not_empty() ) {
@@ -56,6 +59,10 @@
     to use it, and there is no any Singleton restrictions.
 
     The instance of this class can work only with one domain and scheme: either HTTP or HTTPS.
+
+### LICENSE
+
+    This module is distributed under terms of Artistic Perl 5 license.
 
 ##### new($class, %opts)
     The class constructor.

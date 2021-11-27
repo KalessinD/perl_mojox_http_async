@@ -21,7 +21,7 @@ name: MojoX-HTTP-Async
 provides:
   MojoX::HTTP::Async:
     file: lib/MojoX/HTTP/Async.pm
-    version: '0.01'
+    version: '0.05'
 requires:
   Carp: '0'
   Errno: '0'

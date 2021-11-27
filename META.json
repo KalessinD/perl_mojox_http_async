@@ -51,7 +51,7 @@
    "provides" : {
       "MojoX::HTTP::Async" : {
          "file" : "lib/MojoX/HTTP/Async.pm",
-         "version" : "0.01"
+         "version" : "0.05"
       }
    },
    "release_status" : "stable",

@@ -10,18 +10,19 @@ use bytes ();
 use lib 'lib/';
 
 use Test::TCP ();
-use Test::More ('import' => [qw/ done_testing is ok use_ok note fail /]);
+use Test::More ('import' => [qw/ done_testing is ok use_ok note like /]);
 
 use Time::HiRes qw/ sleep /;
 use Socket qw/ sockaddr_in AF_INET INADDR_ANY SOCK_STREAM SOL_SOCKET SO_REUSEADDR /;
 use Net::EmptyPort qw/ empty_port /;
+use Mojo::Message::Request ();
 
 my $server_port = empty_port({ host => 'localhost' });
 my $processed_slots = 0;
-my $wait_timeout = 2;
-my $request_timeout = 1.2;
-my $connect_timeout = 1;
-my $inactivity_timeout = 1.7;
+my $wait_timeout = 12;
+my $request_timeout = 7.2;
+my $connect_timeout = 6;
+my $inactivity_timeout = 6.5;
 my $server = Test::TCP->new(
     'max_wait' => 10,
     'host'     => 'localhost',
@@ -151,8 +152,8 @@ while (my $tx = $ua->wait_for_next_response($wait_timeout)) {
     $processed_slots++;
     my $res = $tx->res();
     is($res->body(), '', "checking the response body");
-    is($res->message(), 'Request timeout', 'checking the response message');
-    is($res->code(), '524', 'checking the response code');
+    like($res->message(), qr/^(Connection reset by peer|Request timeout)$/, 'checking the response message');
+    ok($res->code() == 524 || $res->code() == 520, 'checking the response code');
 }
 
 is($processed_slots, 1, "checking the amount of processed slots");

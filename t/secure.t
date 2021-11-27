@@ -18,13 +18,14 @@ use Net::EmptyPort qw/ empty_port /;
 use IO::Socket::SSL ();
 use IO::Socket::SSL qw/ SSL_VERIFY_NONE /;
 use FindBin qw/ $Bin /;
+use Mojo::Message::Request ();
 
 my $server_port = empty_port({ host => 'localhost' });
 my $processed_slots = 0;
-my $wait_timeout = 2;
-my $request_timeout = 1.2;
-my $connect_timeout = 1;
-my $inactivity_timeout = 1.7;
+my $wait_timeout = 12;
+my $request_timeout = 7.2;
+my $connect_timeout = 6;
+my $inactivity_timeout = 6.5;
 my $server = Test::TCP->new(
     'max_wait' => 10,
     'host'     => 'localhost',

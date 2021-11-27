@@ -1,5 +1,6 @@
 Build.PL
 Changes
+lib/MojoX/HTTP/Async.pm
 LICENSE
 MANIFEST
 MANIFEST.SKIP
@@ -7,5 +8,7 @@ META.json
 META.yml
 README
 README.md
+t/certs/server-cert.pem
+t/certs/server-key.pem
 t/insecure.t
-lib/MojoX/HTTP/Async.pm
+t/secure.t

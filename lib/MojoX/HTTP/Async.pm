@@ -9,6 +9,7 @@ MojoX::HTTP::Async - simple package to execute multiple parallel requests to the
 =head1 SYNOPSIS
 
     use MojoX::HTTP::Async ();
+    use Mojo::Message::Request ();
 
     # creates new instance for async requests
     # restricts max amount of simultaneously executed requests
@@ -17,6 +18,7 @@ MojoX::HTTP::Async - simple package to execute multiple parallel requests to the
     # let's fill slots
     $ua->add( '/page1.html?lang=en');
     $ua->add( 'http://my-site.com/page2.html');
+    $ua->add( Mojo::Message::Request->new() );
 
     # non-blocking requests processing
     while ( $ua->not_empty() ) {
@@ -60,6 +62,10 @@ And in comparison with C<Mojo::AsyncAwait>, it's it's more intuitive how to use 
 
 The instance of this class can work only with one domain and scheme: either HTTP or HTTPS.
 
+= LICENSE
+
+This module is distributed under terms of Artistic Perl 5 license.
+
 =cut
 
 use 5.026;
@@ -79,7 +85,7 @@ use URI ();
 use Scalar::Util qw/ blessed /;
 use Errno qw / :POSIX /;
 
-our $VERSION = 0.04;
+our $VERSION = 0.05;
 
 =head2 new($class, %opts)
 
