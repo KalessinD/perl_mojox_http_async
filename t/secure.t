@@ -18,6 +18,7 @@ use IO::Socket::SSL ();
 use IO::Socket::SSL qw/ SSL_VERIFY_NONE /;
 use FindBin qw/ $Bin /;
 use Mojo::Message::Request ();
+use Net::EmptyPort qw/ empty_port /;
 
 my $parent_pid = $$;
 my $wait_for_a_signal_secs = 10;
@@ -25,7 +26,8 @@ my $can_go_further = 0;
 
 $SIG{'USR1'} = sub ($sig) { $can_go_further = 1; };
 
-my $server_port = get_free_port(49152, 65000);
+#my $server_port = get_free_port(49152, 65000);
+my $server_port = empty_port({'host' => 'localhost', 'proto' => 'tcp', 'port' => (29152 + int(rand(1000)))});
 my $processed_slots = 0;
 my $wait_timeout = 12;
 my $request_timeout = 7.2;
