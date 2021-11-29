@@ -31,6 +31,8 @@ my $can_go_further = 0;
 
 $SIG{'USR1'} = sub ($sig) { $can_go_further = 1; };
 
+srand(time() + $$);
+
 #my $server_port = get_free_port(49152, 65000);
 my $server_port = empty_port({'host' => 'localhost', 'proto' => 'tcp', 'port' => (29152 + int(rand(1000)))});
 my $server;
