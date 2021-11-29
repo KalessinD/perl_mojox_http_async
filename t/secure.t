@@ -11,7 +11,7 @@ use lib 'lib/', 't/lib';
 
 use Test::TCP ();
 use Test::More ('import' => [qw/ done_testing is ok use_ok note fail /]);
-use Test::SockUtils qw/ get_free_port /;
+#use Test::SockUtils qw/ get_free_port /;
 
 use Time::HiRes qw/ sleep /;
 use IO::Socket::SSL ();
@@ -20,6 +20,11 @@ use FindBin qw/ $Bin /;
 use Mojo::Message::Request ();
 use Net::EmptyPort qw/ empty_port /;
 
+my $processed_slots = 0;
+my $wait_timeout = 12;
+my $request_timeout = 7.2;
+my $connect_timeout = 6;
+my $inactivity_timeout = 6.5;
 my $parent_pid = $$;
 my $wait_for_a_signal_secs = 10;
 my $can_go_further = 0;
@@ -28,92 +33,99 @@ $SIG{'USR1'} = sub ($sig) { $can_go_further = 1; };
 
 #my $server_port = get_free_port(49152, 65000);
 my $server_port = empty_port({'host' => 'localhost', 'proto' => 'tcp', 'port' => (29152 + int(rand(1000)))});
-my $processed_slots = 0;
-my $wait_timeout = 12;
-my $request_timeout = 7.2;
-my $connect_timeout = 6;
-my $inactivity_timeout = 6.5;
-my $server = Test::TCP->new(
-    'max_wait' => 10,
-    'host'     => 'localhost',
-    'listen'   => 0,
-    'proto'    => 'tcp',
-    'port'     => $server_port,
-    'code'     => sub ($port) {
+my $server;
+my $attempts = 10;
 
-        local $SIG{'USR1'} = 'DEFAULT';
+while ($attempts-- > 0) {
+    eval {
+        $server = Test::TCP->new(
+            'max_wait' => 10,
+            'host'     => 'localhost',
+            'listen'   => 0,
+            'proto'    => 'tcp',
+            'port'     => $server_port,
+            'code'     => sub ($port) {
 
-        my $QUEUE_LENGTH = 3;
-        my $socket = IO::Socket::SSL->new(
-            'LocalAddr' => 'localhost',
-            'LocalPort' => $port,
-            'Listen'    => $QUEUE_LENGTH,
-            'SSL_cert_file' => "${Bin}/certs/server-cert.pem",
-            'SSL_key_file' => "${Bin}/certs/server-key.pem",
-            'SSL_passwd_cb' => sub { 1234 },
-        ) or die "Can't create socket: $!";
+                local $SIG{'USR1'} = 'DEFAULT';
 
-        my $default_response = "HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n";
-        my %responses_by_request_number = (
-            '01' => "HTTP/1.1 200 OK\r\nContent-Length: 10\r\n\r\n0123456789",
-            '02' => "HTTP/1.1 200 OK\r\nContent-Length: 10\r\n\r\n9876543210",
-        );
+                my $QUEUE_LENGTH = 3;
+                my $socket = IO::Socket::SSL->new(
+                    'LocalAddr' => 'localhost',
+                    'LocalPort' => $port,
+                    'Listen'    => $QUEUE_LENGTH,
+                    'SSL_cert_file' => "${Bin}/certs/server-cert.pem",
+                    'SSL_key_file' => "${Bin}/certs/server-key.pem",
+                    'SSL_passwd_cb' => sub { 1234 },
+                ) or die "Can't create socket: $!";
 
-        kill('USR1', $parent_pid); # just going to say: server is started
+                my $default_response = "HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n";
+                my %responses_by_request_number = (
+                    '01' => "HTTP/1.1 200 OK\r\nContent-Length: 10\r\n\r\n0123456789",
+                    '02' => "HTTP/1.1 200 OK\r\nContent-Length: 10\r\n\r\n9876543210",
+                );
 
-        while (1) {
+                kill('USR1', $parent_pid); # just going to say: server is started
 
-            my $pid;
-            my $client = $socket->accept();
+                while (1) {
 
-            die("failed to accept or SSL handshake: ${!}, ${IO::Socket::SSL::SSL_ERROR}") if $!;
-            sleep(0.1) && next if !$client;
+                    my $pid;
+                    my $client = $socket->accept();
 
-            if ($pid = fork()) { # parent
-                sleep(0.05);
-            } elsif ($pid == 0) { # child
-                close($socket);
+                    die("failed to accept or SSL handshake: ${!}, ${IO::Socket::SSL::SSL_ERROR}") if $!;
+                    sleep(0.1) && next if !$client;
 
-                local $| = 1; # autoflush
-                local $SIG{'__DIE__'} = 'DEFAULT';
+                    if ($pid = fork()) { # parent
+                        sleep(0.05);
+                    } elsif ($pid == 0) { # child
+                        close($socket);
 
-                my $rh = '';
-                vec($rh, fileno($client), 1) = 1;
-                my ($wh, $eh) = ($rh) x 2;
+                        local $| = 1; # autoflush
+                        local $SIG{'__DIE__'} = 'DEFAULT';
 
-                select($rh, undef, $eh, undef);
+                        my $rh = '';
+                        vec($rh, fileno($client), 1) = 1;
+                        my ($wh, $eh) = ($rh) x 2;
 
-                die($!) if ( vec($eh, fileno($client), 1) != 0 );
+                        select($rh, undef, $eh, undef);
 
-                my $data = <$client>; # GET /page/01.html HTTP/1.1
-                my ($page) = (($data // '') =~ m#^[A-Z]{3,}\s/page/([0-9]+)\.html#);
-                my $response = $default_response;
+                        die($!) if ( vec($eh, fileno($client), 1) != 0 );
 
-                $response = $responses_by_request_number{$page} // $response if $page;
+                        my $data = <$client>; # GET /page/01.html HTTP/1.1
+                        my ($page) = (($data // '') =~ m#^[A-Z]{3,}\s/page/([0-9]+)\.html#);
+                        my $response = $default_response;
 
-                $eh = $wh;
+                        $response = $responses_by_request_number{$page} // $response if $page;
 
-                select(undef, $wh, $eh, undef);
+                        $eh = $wh;
 
-                die($!) if ( vec($eh, fileno($client), 1) != 0 );
+                        select(undef, $wh, $eh, undef);
 
-                if ($page && ($page eq '06' || $page eq '07' || $page eq '08')) { # tests for request timeouts
-                    sleep($request_timeout + 0.1);
+                        die($!) if ( vec($eh, fileno($client), 1) != 0 );
+
+                        if ($page && ($page eq '06' || $page eq '07' || $page eq '08')) { # tests for request timeouts
+                            sleep($request_timeout + 0.1);
+                        }
+
+                        my $bytes = syswrite($client, $response, bytes::length($response), 0);
+
+                        warn("Can't send the response") if $bytes != bytes::length($response);
+
+                        sleep(0.1);
+                        close($client);
+                        exit(0);
+                    } else {
+                        die("Can't fork: $!");
+                    }
                 }
+            },
+        );
+    };
 
-                my $bytes = syswrite($client, $response, bytes::length($response), 0);
+    my $error = $@;
 
-                warn("Can't send the response") if $bytes != bytes::length($response);
-
-                sleep(0.1);
-                close($client);
-                exit(0);
-            } else {
-                die("Can't fork: $!");
-            }
-        }
-    },
-);
+    last if ! $error;
+    die($error) if $error && $error !~ m/(Address already in use)|(Connection refused)/;
+}
 
 BEGIN { use_ok('MojoX::HTTP::Async') };
 
