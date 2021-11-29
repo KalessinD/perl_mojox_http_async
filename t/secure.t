@@ -141,7 +141,7 @@ while (1) {
 
 my $ua = MojoX::HTTP::Async->new(
     'host' => 'localhost',
-    'port' => $server->port(),
+    'port' => $server_port,
     'slots' => 2,
     'connect_timeout' => $connect_timeout,
     'request_timeout' => $request_timeout,
