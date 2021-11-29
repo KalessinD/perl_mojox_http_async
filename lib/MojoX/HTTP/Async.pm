@@ -4,7 +4,7 @@ package MojoX::HTTP::Async;
 
 =head1 NAME
 
-MojoX::HTTP::Async - simple package to execute multiple parallel requests to the same host
+MojoX::HTTP::Async - The simple package to execute multiple parallel requests to the same host
 
 =head1 SYNOPSIS
 
@@ -61,6 +61,9 @@ In comparison with C<HTTP::Async>, this library doesn't make a new connection on
 And in comparison with C<Mojo::AsyncAwait>, it's it's more intuitive how to use it, and there is no any Singleton restrictions.
 
 The instance of this class can work only with one domain and scheme: either HTTP or HTTPS.
+
+This package uses C<Time:HiRes> library. But the last one currently doesn't support Win32 platform.
+It means that this package won't work on Win32 too.
 
 =head1 LICENSE
 

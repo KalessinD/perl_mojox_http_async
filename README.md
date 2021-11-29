@@ -60,6 +60,9 @@
 
     The instance of this class can work only with one domain and scheme: either HTTP or HTTPS.
 
+    This package uses "Time:HiRes" library. But the last one currently doesn't support Win32 platform.
+    It means that this package won't work on Win32 too.
+
 ### LICENSE
 
     This module is distributed under terms of Artistic Perl 5 license.

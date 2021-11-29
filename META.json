@@ -17,6 +17,7 @@
       "build" : {
          "requires" : {
             "FindBin" : 0,
+            "Net::EmptyPort" : 0,
             "Socket" : 0,
             "Test::More" : 0,
             "Test::TCP" : 0,
