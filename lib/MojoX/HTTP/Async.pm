@@ -62,7 +62,7 @@ And in comparison with C<Mojo::AsyncAwait>, it's it's more intuitive how to use 
 
 The instance of this class can work only with one domain and scheme: either HTTP or HTTPS.
 
-= LICENSE
+=head1 LICENSE
 
 This module is distributed under terms of Artistic Perl 5 license.
 
