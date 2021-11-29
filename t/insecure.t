@@ -118,7 +118,7 @@ while ($attempts-- > 0) {
 
     my $error = $@;
 
-    last if ! $error;
+    last if ! $error && $server;
     die($error) if $error && $error !~ m/(Address already in use)|(Connection refused)/;
 }
 
