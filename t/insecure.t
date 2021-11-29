@@ -17,6 +17,12 @@ use Socket qw/ sockaddr_in AF_INET INADDR_ANY SOCK_STREAM SOL_SOCKET SO_REUSEADD
 use Net::EmptyPort qw/ empty_port /;
 use Mojo::Message::Request ();
 
+my $parent_pid = $$;
+my $wait_for_a_signal_secs = 10;
+my $can_go_further = 0;
+
+$SIG{'USR1'} = sub ($sig) { $can_go_further = 1; };
+
 my $server_port = empty_port({ host => 'localhost' });
 my $processed_slots = 0;
 my $wait_timeout = 12;
@@ -47,6 +53,8 @@ my $server = Test::TCP->new(
             '02' => "HTTP/1.1 200 OK\r\nContent-Length: 10\r\n\r\n9876543210",
             '05' => "HTTP/1.1 200 OK\r\nContent-Length: 15\r\n\r\nHello, world!!!",
         );
+
+        kill('USR1', $parent_pid); # just going to say: server is started
 
         while (my $peer = accept($client, $socket)) {
 
@@ -99,6 +107,14 @@ my $server = Test::TCP->new(
 );
 
 BEGIN { use_ok('MojoX::HTTP::Async') };
+
+# just an attempt to be sure that server is started
+my $stop_waiting_ts = time() + $wait_for_a_signal_secs;
+while (1) {
+    sleep(0.01);
+    last if (time() < $stop_waiting_ts);
+    last if $can_go_further;
+}
 
 my $ua = MojoX::HTTP::Async->new(
     'host' => 'localhost',

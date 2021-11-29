@@ -20,6 +20,12 @@ use IO::Socket::SSL qw/ SSL_VERIFY_NONE /;
 use FindBin qw/ $Bin /;
 use Mojo::Message::Request ();
 
+my $parent_pid = $$;
+my $wait_for_a_signal_secs = 10;
+my $can_go_further = 0;
+
+$SIG{'USR1'} = sub ($sig) { $can_go_further = 1; };
+
 my $server_port = empty_port({ host => 'localhost' });
 my $processed_slots = 0;
 my $wait_timeout = 12;
@@ -33,6 +39,8 @@ my $server = Test::TCP->new(
     'proto'    => 'tcp',
     'port'     => $server_port,
     'code'     => sub ($port) {
+
+        local $SIG{'USR1'} = 'DEFAULT';
 
         my $QUEUE_LENGTH = 3;
         my $socket = IO::Socket::SSL->new(
@@ -49,6 +57,8 @@ my $server = Test::TCP->new(
             '01' => "HTTP/1.1 200 OK\r\nContent-Length: 10\r\n\r\n0123456789",
             '02' => "HTTP/1.1 200 OK\r\nContent-Length: 10\r\n\r\n9876543210",
         );
+
+        kill('USR1', $parent_pid); # just going to say: server is started
 
         while (1) {
 
@@ -105,6 +115,14 @@ my $server = Test::TCP->new(
 );
 
 BEGIN { use_ok('MojoX::HTTP::Async') };
+
+# just an attempt to be sure that server is started
+my $stop_waiting_ts = time() + $wait_for_a_signal_secs;
+while (1) {
+    sleep(0.01);
+    last if (time() < $stop_waiting_ts);
+    last if $can_go_further;
+}
 
 my $ua = MojoX::HTTP::Async->new(
     'host' => 'localhost',
