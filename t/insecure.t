@@ -7,14 +7,14 @@ use warnings;
 use experimental qw/ signatures /;
 use bytes ();
 
-use lib 'lib/';
+use lib 'lib/', 't/lib';
 
 use Test::TCP ();
 use Test::More ('import' => [qw/ done_testing is ok use_ok note like /]);
+use Test::SockUtils qw/ get_free_port /;
 
 use Time::HiRes qw/ sleep /;
 use Socket qw/ sockaddr_in AF_INET INADDR_ANY SOCK_STREAM SOL_SOCKET SO_REUSEADDR /;
-use Net::EmptyPort qw/ empty_port /;
 use Mojo::Message::Request ();
 
 my $parent_pid = $$;
@@ -23,7 +23,7 @@ my $can_go_further = 0;
 
 $SIG{'USR1'} = sub ($sig) { $can_go_further = 1; };
 
-my $server_port = empty_port({ host => 'localhost' });
+my $server_port = get_free_port(49152, 65000);
 my $processed_slots = 0;
 my $wait_timeout = 12;
 my $request_timeout = 7.2;

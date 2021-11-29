@@ -14,7 +14,6 @@ my $build = Module::Build->new(
     build_requires => {
         'Test::TCP' => 0,
         'Test::More' => 0,
-        'Net::EmptyPort' => 0,
         'Time::HiRes' => 0,
         'Socket' => 0,
         'FindBin' => 0,

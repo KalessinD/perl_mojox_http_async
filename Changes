@@ -3,6 +3,8 @@ Changes
 
 0.07 2021 Nov 27
     - fix version in meta-files
+    - getting rid of Net::EmptyPort in tests
+    - trying to get rid of race conditions between client and server in tests
 
 0.06 2021 Nov 27                                                                                                                                                                                                    
     - updating test certs due to some OpenSSl version don't accept the initial ones
