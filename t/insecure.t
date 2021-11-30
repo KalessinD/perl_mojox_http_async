@@ -15,7 +15,6 @@ use Test::Utils qw/ start_server notify_parent /;
 use Time::HiRes qw/ sleep /;
 use Socket qw/ sockaddr_in AF_INET INADDR_ANY SOCK_STREAM /;
 use Mojo::Message::Request ();
-use Net::EmptyPort qw/ empty_port /;
 
 my $host = 'localhost';
 my $can_go_further = 0;
@@ -94,10 +93,8 @@ sub on_start_cb ($port) {
     }
 }
 
-srand(time() + $$);
 
-my $server_port = empty_port({'host' => $host, 'proto' => 'tcp', 'port' => (29152 + int(rand(1000)))});
-my $server = start_server(\&on_start_cb, $server_port);
+my ($server, $server_port) = start_server(\&on_start_cb, $host);
 my $ua = MojoX::HTTP::Async->new(
     'host' => $host,
     'port' => $server->port(),

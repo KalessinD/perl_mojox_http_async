@@ -16,7 +16,6 @@ use Time::HiRes qw/ sleep /;
 use IO::Socket::SSL qw/ SSL_VERIFY_NONE /;
 use FindBin qw/ $Bin /;
 use Mojo::Message::Request ();
-use Net::EmptyPort qw/ empty_port /;
 
 my $host = 'localhost';
 my $processed_slots = 0;
@@ -95,10 +94,8 @@ sub on_start_cb ($port) {
     }
 }
 
-srand(time() + $$);
 
-my $server_port = empty_port({'host' => $host, 'proto' => 'tcp', 'port' => (29152 + int(rand(1000)))});
-my $server = start_server(\&on_start_cb, $server_port);
+my ($server, $server_port) = start_server(\&on_start_cb, $host);
 my $ua = MojoX::HTTP::Async->new(
     'host' => $host,
     'port' => $server_port,

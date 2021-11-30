@@ -8,6 +8,7 @@ use Exporter qw/ import /;
 
 use Test::TCP ();
 use Socket qw/ inet_aton pack_sockaddr_in AF_INET SOCK_STREAM /;
+use Net::EmptyPort qw/ empty_port /;
 
 our @EXPORT      = ();
 our @EXPORT_OK   = qw/ get_free_port start_server notify_parent /;
@@ -21,7 +22,7 @@ sub notify_parent () {
     }
 }
 
-sub get_free_port ($start, $end, $timeout = 0.1) {
+sub get_free_port ($start, $end, $host = 'localhost', $timeout = 0.1) {
     my $free_port;
     my $host_addr = inet_aton('localhost');
     my $proto     = getprotobyname('tcp');
@@ -57,13 +58,16 @@ sub get_free_port ($start, $end, $timeout = 0.1) {
     return $free_port;
 }
 
-sub start_server ($on_start_cb, $server_port, $attempts = 10, $wait_for_a_signal_secs = 5) {
+sub start_server ($on_start_cb, $host = 'localhost', $server_port = undef, $attempts = 10, $wait_for_a_signal_secs = 5) {
 
     my $can_go_further = 0;
     my $server;
 
+    srand(time() + $$);
+
     $PPID //= $$; # PID before forking the server
-    $server_port //= get_free_port(49152, 65000);
+    $server_port //= empty_port({'host' => $host, 'proto' => 'tcp', 'port' => (29152 + int(rand(1000)))});
+    # $server_port //= get_free_port(49152, 65000, $host);
 
     local $SIG{'USR1'} = sub ($sig) { $can_go_further = 1; };
 
@@ -95,7 +99,7 @@ sub start_server ($on_start_cb, $server_port, $attempts = 10, $wait_for_a_signal
         last if $can_go_further;
     }
 
-    return $server;
+    return ($server, $server_port);
 }
 
 1;
