@@ -16,12 +16,10 @@
    "prereqs" : {
       "build" : {
          "requires" : {
-            "FindBin" : "0",
+            "FindBin" : "1.51",
             "Net::EmptyPort" : "0",
-            "Socket" : "0",
-            "Test::More" : "0",
-            "Test::TCP" : "0",
-            "Time::HiRes" : "0"
+            "Test::More" : "1.302183",
+            "Test::TCP" : "2.19"
          }
       },
       "configure" : {
@@ -31,19 +29,20 @@
       },
       "runtime" : {
          "requires" : {
-            "Carp" : "0",
-            "Errno" : "0",
-            "Fcntl" : "0",
+            "Carp" : "1.42",
+            "Errno" : "1.28",
+            "Fcntl" : "1.13",
             "IO::Socket::SSL" : "2.072",
-            "List::Util" : "0",
+            "List::Util" : "1.4602",
             "Mojo::Message::Request" : "0",
             "Mojo::Message::Response" : "0",
             "Mojo::Transaction::HTTP" : "0",
-            "POSIX" : "0",
-            "Scalar::Util" : "0",
-            "Socket" : "0",
-            "Time::HiRes" : "0",
-            "URI" : "0",
+            "Mojolicious" : "7.59",
+            "POSIX" : "1.76",
+            "Scalar::Util" : "1.4602",
+            "Socket" : "2.03",
+            "Time::HiRes" : "1.9741",
+            "URI" : "1.73",
             "perl" : "5.02"
          }
       }
