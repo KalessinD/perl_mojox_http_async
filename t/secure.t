@@ -95,10 +95,10 @@ sub on_start_cb ($port) {
 }
 
 
-my ($server, $server_port) = start_server(\&on_start_cb, $host);
+my $server = start_server(\&on_start_cb, $host);
 my $ua = MojoX::HTTP::Async->new(
     'host' => $host,
-    'port' => $server_port,
+    'port' => $server->port,
     'slots' => 2,
     'connect_timeout' => $connect_timeout,
     'request_timeout' => $request_timeout,

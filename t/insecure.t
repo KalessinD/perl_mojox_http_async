@@ -94,7 +94,7 @@ sub on_start_cb ($port) {
 }
 
 
-my ($server, $server_port) = start_server(\&on_start_cb, $host);
+my $server = start_server(\&on_start_cb, $host);
 my $ua = MojoX::HTTP::Async->new(
     'host' => $host,
     'port' => $server->port(),

@@ -99,7 +99,7 @@ sub start_server ($on_start_cb, $host = 'localhost', $server_port = undef, $atte
         last if $can_go_further;
     }
 
-    return ($server, $server_port);
+    return $server;
 }
 
 1;
