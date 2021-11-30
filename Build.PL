@@ -12,6 +12,7 @@ my $build = Module::Build->new(
         'Module::Build' => '0.4220'
     },
     build_requires => {
+        'Test::SharedFork' => 0.35,
         'Test::TCP' => 2.19,
         'Test::More' => 1.302183,
         'FindBin' => 1.51,

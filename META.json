@@ -19,6 +19,7 @@
             "FindBin" : "1.51",
             "Net::EmptyPort" : "0",
             "Test::More" : "1.302183",
+            "Test::SharedFork" : "0.35",
             "Test::TCP" : "2.19"
          }
       },
