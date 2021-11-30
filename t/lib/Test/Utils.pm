@@ -10,19 +10,20 @@ use Test::TCP ();
 use Socket qw/ inet_aton pack_sockaddr_in AF_INET SOCK_STREAM /;
 use Net::EmptyPort qw/ empty_port /;
 
+use constant {
+    IS_NOT_WIN => ($^O ne 'MSWin32') ? 1 : 0,
+};
+
 our @EXPORT      = ();
 our @EXPORT_OK   = qw/ get_free_port start_server notify_parent /;
 our %EXPORT_TAGS = ();
 
 our $PPID;
 
-sub is_win32 {
-    return ($^O eq 'MSWin32') ? 1 : 0;
-}
 
 sub notify_parent () {
-    if (!is_win32() && defined($PPID)) {
-        kill('USR1', $PPID);
+    if (&IS_NOT_WIN) {
+        kill('USR1', $PPID) if defined($PPID);
     }
 }
 
@@ -73,7 +74,7 @@ sub start_server ($on_start_cb, $host = 'localhost', $server_port = undef, $atte
     $server_port //= empty_port({'host' => $host, 'proto' => 'tcp', 'port' => (29152 + int(rand(1000)))});
     # $server_port //= get_free_port(49152, 65000, $host);
 
-    if (!is_win32()) {
+    if (&IS_NOT_WIN) {
         $SIG{'USR1'} = sub ($sig) { $can_go_further = 1; };
     }
 
@@ -105,7 +106,7 @@ sub start_server ($on_start_cb, $host = 'localhost', $server_port = undef, $atte
         last if $can_go_further;
     }
 
-    if (!is_win32()) {
+    if (&IS_NOT_WIN) {
         $SIG{'USR1'} = 'DEFAULT';
     }
 

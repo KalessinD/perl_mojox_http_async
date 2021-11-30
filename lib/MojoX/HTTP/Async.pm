@@ -72,8 +72,9 @@ use 5.020;
 use warnings;
 use bytes ();
 use Socket qw/ inet_aton pack_sockaddr_in AF_INET SOCK_STREAM SOL_SOCKET SO_KEEPALIVE SO_OOBINLINE IPPROTO_TCP TCP_KEEPIDLE TCP_KEEPINTVL TCP_KEEPCNT /;
+#use IO::Socket::IP ();
 use IO::Socket::SSL ();
-use Fcntl qw/ F_SETFL O_NONBLOCK FD_CLOEXEC /;
+use Fcntl qw/ F_SETFL O_NONBLOCK FD_CLOEXEC O_NOINHERIT /;
 use experimental qw/ signatures /;
 use Carp qw/ croak /;
 use List::Util qw/ first /;
@@ -86,6 +87,11 @@ use Scalar::Util qw/ blessed /;
 use Errno qw / :POSIX /;
 
 our $VERSION = 0.08;
+
+use constant {
+    IS_WIN     => ($^O eq 'MSWin32') ? 1 : 0,
+    IS_NOT_WIN => ($^O ne 'MSWin32') ? 1 : 0,
+};
 
 =head2 new($class, %opts)
 
@@ -202,7 +208,19 @@ sub _connect ($self, $slot, $proto, $peer_addr) {
 
     socket(my $socket, AF_INET, SOCK_STREAM, $proto) || croak("socket error: $!");
     connect($socket, $peer_addr)                     || croak("connect error: $!"); # in case of O_NONBLOCK it will return with EINPROGRESS
-    fcntl($socket, F_SETFL, O_NONBLOCK | FD_CLOEXEC) || croak("fcntl error has occurred: $!");
+
+    # When a constant is used in an expression, Perl replaces it with its value at compile time,
+    # and may then optimize the expression further. In particular, any code in an if (CONSTANT)
+    # block will be optimized away if the constant is false.
+    if (&IS_WIN) {
+        fcntl($socket, F_SETFL, O_NONBLOCK | FD_CLOEXEC) || croak("fcntl error has occurred: $!");
+    }
+
+    if (&IS_NOT_WIN) {
+        #$socket = IO::Socket::IP->new_from_fd(fileno($socket), '+<');
+        defined($socket->blocking(0)) or croak("can't set non-blocking state on socket: $!");
+        #$socket->sockopt(O_NOINHERIT, 1) or croak("fcntl error has occurred: $!"); # the same as SOCK_CLOEXEC
+    }
 
     my $sol_socket_opts = $self->{'sol_socket'} // {};
 
