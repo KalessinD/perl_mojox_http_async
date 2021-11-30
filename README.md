@@ -91,7 +91,7 @@
 
 ###### connect_timeout
         By default it's equal to 1.
-        Sets connection timeout in seconds (can be float with micro seconds accuracy).
+        Sets connection timeout in seconds.
 
         If it's equal to 0, then there will be no timeout restrictions.
 

@@ -3,6 +3,7 @@ Changes
 
 0.08 2021 Nov 30
     - tests refactoring
+    - getting rid of Time::HiRes's sleep and alarm functions
 
 0.07 2021 Nov 27
     - fix version in meta-files

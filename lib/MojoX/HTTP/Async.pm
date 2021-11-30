@@ -80,7 +80,7 @@ use Fcntl qw/ F_SETFL O_NONBLOCK FD_CLOEXEC /;
 use experimental qw/ signatures /;
 use Carp qw/ croak /;
 use List::Util qw/ first /;
-use Time::HiRes qw/ alarm time sleep /;
+use Time::HiRes qw/ time /;
 use Mojo::Message::Request ();
 use Mojo::Message::Response ();
 use Mojo::Transaction::HTTP ();
@@ -125,7 +125,7 @@ See C<IO::Socket::SSL> constructor arguments for details.
 =item connect_timeout
 
 By default it's equal to 1.
-Sets connection timeout in seconds (can be float with micro seconds accuracy).
+Sets connection timeout in seconds.
 
 If it's equal to 0, then there will be no timeout restrictions.
 
@@ -626,7 +626,7 @@ sub wait_for_next_response ($self, $timeout = 0) {
     while (1) {
         last if ($exp_ts && time() >= $exp_ts); # awaiting process is time-outed
         last if (($response = $self->next_response()) || !$self->not_empty());
-        sleep(1E-6) if (!$response); # sleep 1 microsecond
+        select(undef, undef, undef, 1E-6) if (!$response); # sleep 1 microsecond
     }
 
     return $response;
