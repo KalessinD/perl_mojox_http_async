@@ -1,9 +1,9 @@
 {
-   "abstract" : "simple package to execute multiple parallel requests to the same host",
+   "abstract" : "The simple package to execute multiple parallel requests to the same host",
    "author" : [
       "unknown"
    ],
-   "dynamic_config" : 0,
+   "dynamic_config" : 1,
    "generated_by" : "Module::Build version 0.4231",
    "license" : [
       "artistic_1"
@@ -16,12 +16,12 @@
    "prereqs" : {
       "build" : {
          "requires" : {
-            "FindBin" : 0,
-            "Net::EmptyPort" : 0,
-            "Socket" : 0,
-            "Test::More" : 0,
-            "Test::TCP" : 0,
-            "Time::HiRes" : 0
+            "FindBin" : "0",
+            "Net::EmptyPort" : "0",
+            "Socket" : "0",
+            "Test::More" : "0",
+            "Test::TCP" : "0",
+            "Time::HiRes" : "0"
          }
       },
       "configure" : {
@@ -31,20 +31,20 @@
       },
       "runtime" : {
          "requires" : {
-            "Carp" : 0,
-            "Errno" : 0,
-            "Fcntl" : 0,
-            "IO::Socket::SSL" : 0,
-            "List::Util" : 0,
-            "Mojo::Message::Request" : 0,
-            "Mojo::Message::Response" : 0,
-            "Mojo::Transaction::HTTP" : 0,
-            "POSIX" : 0,
-            "Scalar::Util" : 0,
-            "Socket" : 0,
-            "Time::HiRes" : 0,
-            "URI" : 0,
-            "perl" : 5.012001
+            "Carp" : "0",
+            "Errno" : "0",
+            "Fcntl" : "0",
+            "IO::Socket::SSL" : "2.072",
+            "List::Util" : "0",
+            "Mojo::Message::Request" : "0",
+            "Mojo::Message::Response" : "0",
+            "Mojo::Transaction::HTTP" : "0",
+            "POSIX" : "0",
+            "Scalar::Util" : "0",
+            "Socket" : "0",
+            "Time::HiRes" : "0",
+            "URI" : "0",
+            "perl" : "5.012001"
          }
       }
    },

@@ -1,5 +1,5 @@
 ---
-abstract: 'simple package to execute multiple parallel requests to the same host'
+abstract: 'The simple package to execute multiple parallel requests to the same host'
 author:
   - unknown
 build_requires:
@@ -11,7 +11,7 @@ build_requires:
   Time::HiRes: '0'
 configure_requires:
   Module::Build: '0.19'
-dynamic_config: 0
+dynamic_config: 1
 generated_by: 'Module::Build version 0.4231, CPAN::Meta::Converter version 2.150010'
 license: artistic
 meta-spec:
@@ -26,7 +26,7 @@ requires:
   Carp: '0'
   Errno: '0'
   Fcntl: '0'
-  IO::Socket::SSL: '0'
+  IO::Socket::SSL: '2.072'
   List::Util: '0'
   Mojo::Message::Request: '0'
   Mojo::Message::Response: '0'

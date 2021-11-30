@@ -11,5 +11,5 @@ README.md
 t/certs/server-cert.pem
 t/certs/server-key.pem
 t/insecure.t
-t/lib/Test/SockUtils.pm
+t/lib/Test/Utils.pm
 t/secure.t
