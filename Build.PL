@@ -20,7 +20,7 @@ my $build = Module::Build->new(
         'Net::EmptyPort' => 0,
     },
     requires => {
-        'perl'  => 5.012001,
+        'perl'  => 5.020,
         'POSIX' => 0,
         'Time::HiRes' => 0,
         'Socket' => 0,

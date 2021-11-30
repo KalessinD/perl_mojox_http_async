@@ -36,7 +36,7 @@ requires:
   Socket: '0'
   Time::HiRes: '0'
   URI: '0'
-  perl: '5.012001'
+  perl: '5.02'
 resources:
   bugtracker: https://github.com/KalessinD/perl_mojox_http_async/issues
   repository: https://github.com/KalessinD/perl_mojox_http_async
