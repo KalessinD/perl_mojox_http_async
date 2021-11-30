@@ -1,6 +1,6 @@
 package Test::Utils;
 
-use 5.026;
+use 5.020;
 use strict;
 use warnings;
 use experimental qw/ signatures /;

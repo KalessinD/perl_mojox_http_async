@@ -71,7 +71,7 @@ This module is distributed under terms of Artistic Perl 5 license.
 
 =cut
 
-use 5.026;
+use 5.020;
 use warnings;
 use bytes ();
 use Socket qw/ inet_aton pack_sockaddr_in AF_INET SOCK_STREAM SOL_SOCKET SO_KEEPALIVE SO_OOBINLINE IPPROTO_TCP TCP_KEEPIDLE TCP_KEEPINTVL TCP_KEEPCNT /;

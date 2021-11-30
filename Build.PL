@@ -9,7 +9,7 @@ my $build = Module::Build->new(
     license             => 'Artistic',
     create_readme       => 1,
     configure_requires  => {
-        'Module::Build' => '0.19'
+        'Module::Build' => '0.4220'
     },
     build_requires => {
         'Test::TCP' => 0,

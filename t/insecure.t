@@ -1,6 +1,6 @@
 package main;
 
-use 5.026;
+use 5.020;
 use utf8;
 use strict;
 use warnings;
