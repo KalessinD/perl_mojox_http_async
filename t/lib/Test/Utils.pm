@@ -16,8 +16,12 @@ our %EXPORT_TAGS = ();
 
 our $PPID;
 
+sub is_win32 {
+    return ($^O eq 'MSWin32') ? 1 : 0;
+}
+
 sub notify_parent () {
-    if ($^O ne 'MSWin32' && defined($PPID)) {
+    if (!is_win32() && defined($PPID)) {
         kill('USR1', $PPID);
     }
 }
@@ -69,7 +73,9 @@ sub start_server ($on_start_cb, $host = 'localhost', $server_port = undef, $atte
     $server_port //= empty_port({'host' => $host, 'proto' => 'tcp', 'port' => (29152 + int(rand(1000)))});
     # $server_port //= get_free_port(49152, 65000, $host);
 
-    local $SIG{'USR1'} = sub ($sig) { $can_go_further = 1; };
+    if (!is_win32()) {
+        $SIG{'USR1'} = sub ($sig) { $can_go_further = 1; };
+    }
 
     while ($attempts-- > 0) {
         eval {
@@ -97,6 +103,10 @@ sub start_server ($on_start_cb, $host = 'localhost', $server_port = undef, $atte
         sleep(0.01);
         last if (time() < $stop_waiting_ts);
         last if $can_go_further;
+    }
+
+    if (!is_win32()) {
+        $SIG{'USR1'} = 'DEFAULT';
     }
 
     return $server;
