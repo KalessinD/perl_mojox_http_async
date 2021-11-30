@@ -9,9 +9,8 @@ use bytes ();
 
 use lib 'lib/', 't/lib';
 
-use Test::TCP ();
 use Test::More ('import' => [qw/ done_testing is ok use_ok note fail /]);
-#use Test::SockUtils qw/ get_free_port /;
+use Test::Utils qw/ start_server /;
 
 use Time::HiRes qw/ sleep /;
 use IO::Socket::SSL ();
@@ -26,119 +25,88 @@ my $request_timeout = 7.2;
 my $connect_timeout = 6;
 my $inactivity_timeout = 6.5;
 my $parent_pid = $$;
-my $wait_for_a_signal_secs = 10;
 my $can_go_further = 0;
-
-$SIG{'USR1'} = sub ($sig) { $can_go_further = 1; };
-
-srand(time() + $$);
-
-#my $server_port = get_free_port(49152, 65000);
-my $server_port = empty_port({'host' => 'localhost', 'proto' => 'tcp', 'port' => (29152 + int(rand(1000)))});
-my $server;
-my $attempts = 10;
-
-while ($attempts-- > 0) {
-    eval {
-        $server = Test::TCP->new(
-            'max_wait' => 10,
-            'host'     => 'localhost',
-            'listen'   => 0,
-            'proto'    => 'tcp',
-            'port'     => $server_port,
-            'code'     => sub ($port) {
-
-                local $SIG{'USR1'} = 'DEFAULT';
-
-                my $QUEUE_LENGTH = 3;
-                my $socket = IO::Socket::SSL->new(
-                    'LocalAddr' => 'localhost',
-                    'LocalPort' => $port,
-                    'Listen'    => $QUEUE_LENGTH,
-                    'SSL_cert_file' => "${Bin}/certs/server-cert.pem",
-                    'SSL_key_file' => "${Bin}/certs/server-key.pem",
-                    'SSL_passwd_cb' => sub { 1234 },
-                ) or die "Can't create socket: $!";
-
-                my $default_response = "HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n";
-                my %responses_by_request_number = (
-                    '01' => "HTTP/1.1 200 OK\r\nContent-Length: 10\r\n\r\n0123456789",
-                    '02' => "HTTP/1.1 200 OK\r\nContent-Length: 10\r\n\r\n9876543210",
-                );
-
-                kill('USR1', $parent_pid); # just going to say: server is started
-
-                while (1) {
-
-                    my $pid;
-                    my $client = $socket->accept();
-
-                    die("failed to accept or SSL handshake: ${!}, ${IO::Socket::SSL::SSL_ERROR}") if $!;
-                    sleep(0.1) && next if !$client;
-
-                    if ($pid = fork()) { # parent
-                        sleep(0.05);
-                    } elsif ($pid == 0) { # child
-                        close($socket);
-
-                        local $| = 1; # autoflush
-                        local $SIG{'__DIE__'} = 'DEFAULT';
-
-                        my $rh = '';
-                        vec($rh, fileno($client), 1) = 1;
-                        my ($wh, $eh) = ($rh) x 2;
-
-                        select($rh, undef, $eh, undef);
-
-                        die($!) if ( vec($eh, fileno($client), 1) != 0 );
-
-                        my $data = <$client>; # GET /page/01.html HTTP/1.1
-                        my ($page) = (($data // '') =~ m#^[A-Z]{3,}\s/page/([0-9]+)\.html#);
-                        my $response = $default_response;
-
-                        $response = $responses_by_request_number{$page} // $response if $page;
-
-                        $eh = $wh;
-
-                        select(undef, $wh, $eh, undef);
-
-                        die($!) if ( vec($eh, fileno($client), 1) != 0 );
-
-                        if ($page && ($page eq '06' || $page eq '07' || $page eq '08')) { # tests for request timeouts
-                            sleep($request_timeout + 0.1);
-                        }
-
-                        my $bytes = syswrite($client, $response, bytes::length($response), 0);
-
-                        warn("Can't send the response") if $bytes != bytes::length($response);
-
-                        sleep(0.1);
-                        close($client);
-                        exit(0);
-                    } else {
-                        die("Can't fork: $!");
-                    }
-                }
-            },
-        );
-    };
-
-    my $error = $@;
-
-    last if ! $error && $server;
-    die($error) if $error && $error !~ m/(Address already in use)|(Connection refused)/;
-}
 
 BEGIN { use_ok('MojoX::HTTP::Async') };
 
-# just an attempt to be sure that server is started
-my $stop_waiting_ts = time() + $wait_for_a_signal_secs;
-while (1) {
-    sleep(0.01);
-    last if (time() < $stop_waiting_ts);
-    last if $can_go_further;
+sub on_start_cb ($port) {
+    local $SIG{'USR1'} = 'DEFAULT';
+
+    my $QUEUE_LENGTH = 3;
+    my $socket = IO::Socket::SSL->new(
+        'LocalAddr' => 'localhost',
+        'LocalPort' => $port,
+        'Listen'    => $QUEUE_LENGTH,
+        'SSL_cert_file' => "${Bin}/certs/server-cert.pem",
+        'SSL_key_file' => "${Bin}/certs/server-key.pem",
+        'SSL_passwd_cb' => sub { 1234 },
+    ) or die "Can't create socket: $!";
+
+    my $default_response = "HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n";
+    my %responses_by_request_number = (
+        '01' => "HTTP/1.1 200 OK\r\nContent-Length: 10\r\n\r\n0123456789",
+        '02' => "HTTP/1.1 200 OK\r\nContent-Length: 10\r\n\r\n9876543210",
+    );
+
+    kill('USR1', $parent_pid); # just going to say: server is started
+
+    while (1) {
+
+        my $pid;
+        my $client = $socket->accept();
+
+        die("failed to accept or SSL handshake: ${!}, ${IO::Socket::SSL::SSL_ERROR}") if $!;
+        sleep(0.1) && next if !$client;
+
+        if ($pid = fork()) { # parent
+            sleep(0.05);
+        } elsif ($pid == 0) { # child
+            close($socket);
+
+            local $| = 1; # autoflush
+            local $SIG{'__DIE__'} = 'DEFAULT';
+
+            my $rh = '';
+            vec($rh, fileno($client), 1) = 1;
+            my ($wh, $eh) = ($rh) x 2;
+
+            select($rh, undef, $eh, undef);
+
+            die($!) if ( vec($eh, fileno($client), 1) != 0 );
+
+            my $data = <$client>; # GET /page/01.html HTTP/1.1
+            my ($page) = (($data // '') =~ m#^[A-Z]{3,}\s/page/([0-9]+)\.html#);
+            my $response = $default_response;
+
+            $response = $responses_by_request_number{$page} // $response if $page;
+
+            $eh = $wh;
+
+            select(undef, $wh, $eh, undef);
+
+            die($!) if ( vec($eh, fileno($client), 1) != 0 );
+
+            if ($page && ($page eq '06' || $page eq '07' || $page eq '08')) { # tests for request timeouts
+                sleep($request_timeout + 0.1);
+            }
+
+            my $bytes = syswrite($client, $response, bytes::length($response), 0);
+
+            warn("Can't send the response") if $bytes != bytes::length($response);
+
+            sleep(0.1);
+            close($client);
+            exit(0);
+        } else {
+            die("Can't fork: $!");
+        }
+    }
 }
 
+srand(time() + $$);
+
+my $server_port = empty_port({'host' => 'localhost', 'proto' => 'tcp', 'port' => (29152 + int(rand(1000)))});
+my $server = start_server(\&on_start_cb, $server_port);
 my $ua = MojoX::HTTP::Async->new(
     'host' => 'localhost',
     'port' => $server_port,

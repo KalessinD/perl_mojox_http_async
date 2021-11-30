@@ -1,6 +1,9 @@
 Changes
 =======
 
+0.08 2021 Nov 30
+    - tests refactoring
+
 0.07 2021 Nov 27
     - fix version in meta-files
     - trying to get rid of race conditions between client and server in tests
