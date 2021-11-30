@@ -28,6 +28,8 @@ my $inactivity_timeout = 6.5;
 BEGIN { use_ok('MojoX::HTTP::Async') };
 
 sub on_start_cb ($port) {
+    local $SIG{'USR1'}    = 'DEFAULT';
+    local $SIG{'__DIE__'} = 'DEFAULT';
 
     socket(my $socket, AF_INET, SOCK_STREAM, getprotobyname( 'tcp' ));
     setsockopt($socket, SOL_SOCKET, SO_REUSEADDR, 1);
@@ -58,7 +60,6 @@ sub on_start_cb ($port) {
             close($socket);
 
             local $| = 1; # autoflush
-            local $SIG{'__DIE__'} = 'DEFAULT';
 
             my $rh = '';
             vec($rh, fileno($client), 1) = 1;
