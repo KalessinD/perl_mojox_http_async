@@ -13,10 +13,11 @@ use Test::More ('import' => [qw/ done_testing is ok use_ok note like /]);
 use Test::Utils qw/ start_server notify_parent /;
 
 use Time::HiRes qw/ sleep /;
-use Socket qw/ sockaddr_in AF_INET INADDR_ANY SOCK_STREAM SOL_SOCKET SO_REUSEADDR /;
+use Socket qw/ sockaddr_in AF_INET INADDR_ANY SOCK_STREAM /;
 use Mojo::Message::Request ();
 use Net::EmptyPort qw/ empty_port /;
 
+my $host = 'localhost';
 my $can_go_further = 0;
 my $processed_slots = 0;
 my $wait_timeout = 12;
@@ -28,7 +29,6 @@ BEGIN { use_ok('MojoX::HTTP::Async') };
 
 sub on_start_cb ($port) {
     socket(my $socket, AF_INET, SOCK_STREAM, getprotobyname( 'tcp' ));
-    setsockopt($socket, SOL_SOCKET, SO_REUSEADDR, 1);
 
     my $QUEUE_LENGTH = 3;
     my $my_addr = sockaddr_in($port, INADDR_ANY);
@@ -96,10 +96,10 @@ sub on_start_cb ($port) {
 
 srand(time() + $$);
 
-my $server_port = empty_port({'host' => 'localhost', 'proto' => 'tcp', 'port' => (29152 + int(rand(1000)))});
+my $server_port = empty_port({'host' => $host, 'proto' => 'tcp', 'port' => (29152 + int(rand(1000)))});
 my $server = start_server(\&on_start_cb, $server_port);
 my $ua = MojoX::HTTP::Async->new(
-    'host' => 'localhost',
+    'host' => $host,
     'port' => $server->port(),
     'slots' => 2,
     'connect_timeout' => $connect_timeout,

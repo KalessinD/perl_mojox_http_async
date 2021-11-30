@@ -13,12 +13,12 @@ use Test::More ('import' => [qw/ done_testing is ok use_ok note fail /]);
 use Test::Utils qw/ start_server notify_parent /;
 
 use Time::HiRes qw/ sleep /;
-use IO::Socket::SSL ();
 use IO::Socket::SSL qw/ SSL_VERIFY_NONE /;
 use FindBin qw/ $Bin /;
 use Mojo::Message::Request ();
 use Net::EmptyPort qw/ empty_port /;
 
+my $host = 'localhost';
 my $processed_slots = 0;
 my $wait_timeout = 12;
 my $request_timeout = 7.2;
@@ -31,7 +31,7 @@ BEGIN { use_ok('MojoX::HTTP::Async') };
 sub on_start_cb ($port) {
     my $QUEUE_LENGTH = 3;
     my $socket = IO::Socket::SSL->new(
-        'LocalAddr' => 'localhost',
+        'LocalAddr' => $host,
         'LocalPort' => $port,
         'Listen'    => $QUEUE_LENGTH,
         'SSL_cert_file' => "${Bin}/certs/server-cert.pem",
@@ -97,10 +97,10 @@ sub on_start_cb ($port) {
 
 srand(time() + $$);
 
-my $server_port = empty_port({'host' => 'localhost', 'proto' => 'tcp', 'port' => (29152 + int(rand(1000)))});
+my $server_port = empty_port({'host' => $host, 'proto' => 'tcp', 'port' => (29152 + int(rand(1000)))});
 my $server = start_server(\&on_start_cb, $server_port);
 my $ua = MojoX::HTTP::Async->new(
-    'host' => 'localhost',
+    'host' => $host,
     'port' => $server_port,
     'slots' => 2,
     'connect_timeout' => $connect_timeout,
