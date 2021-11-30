@@ -10,14 +10,13 @@ use bytes ();
 use lib 'lib/', 't/lib';
 
 use Test::More ('import' => [qw/ done_testing is ok use_ok note like /]);
-use Test::Utils qw/ start_server /;
+use Test::Utils qw/ start_server notify_parent /;
 
 use Time::HiRes qw/ sleep /;
 use Socket qw/ sockaddr_in AF_INET INADDR_ANY SOCK_STREAM SOL_SOCKET SO_REUSEADDR /;
 use Mojo::Message::Request ();
 use Net::EmptyPort qw/ empty_port /;
 
-my $parent_pid = $$;
 my $can_go_further = 0;
 my $processed_slots = 0;
 my $wait_timeout = 12;
@@ -28,9 +27,6 @@ my $inactivity_timeout = 6.5;
 BEGIN { use_ok('MojoX::HTTP::Async') };
 
 sub on_start_cb ($port) {
-    local $SIG{'USR1'}    = 'DEFAULT';
-    local $SIG{'__DIE__'} = 'DEFAULT';
-
     socket(my $socket, AF_INET, SOCK_STREAM, getprotobyname( 'tcp' ));
     setsockopt($socket, SOL_SOCKET, SO_REUSEADDR, 1);
 
@@ -48,7 +44,7 @@ sub on_start_cb ($port) {
         '05' => "HTTP/1.1 200 OK\r\nContent-Length: 15\r\n\r\nHello, world!!!",
     );
 
-    kill('USR1', $parent_pid); # just going to say: server is started
+    notify_parent();
 
     while (my $peer = accept($client, $socket)) {
 

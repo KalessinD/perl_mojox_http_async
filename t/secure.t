@@ -10,7 +10,7 @@ use bytes ();
 use lib 'lib/', 't/lib';
 
 use Test::More ('import' => [qw/ done_testing is ok use_ok note fail /]);
-use Test::Utils qw/ start_server /;
+use Test::Utils qw/ start_server notify_parent /;
 
 use Time::HiRes qw/ sleep /;
 use IO::Socket::SSL ();
@@ -24,15 +24,11 @@ my $wait_timeout = 12;
 my $request_timeout = 7.2;
 my $connect_timeout = 6;
 my $inactivity_timeout = 6.5;
-my $parent_pid = $$;
 my $can_go_further = 0;
 
 BEGIN { use_ok('MojoX::HTTP::Async') };
 
 sub on_start_cb ($port) {
-    local $SIG{'USR1'}    = 'DEFAULT';
-    local $SIG{'__DIE__'} = 'DEFAULT';
-
     my $QUEUE_LENGTH = 3;
     my $socket = IO::Socket::SSL->new(
         'LocalAddr' => 'localhost',
@@ -49,7 +45,7 @@ sub on_start_cb ($port) {
         '02' => "HTTP/1.1 200 OK\r\nContent-Length: 10\r\n\r\n9876543210",
     );
 
-    kill('USR1', $parent_pid); # just going to say: server is started
+    notify_parent();
 
     while (1) {
 

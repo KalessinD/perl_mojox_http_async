@@ -10,8 +10,16 @@ use Test::TCP ();
 use Socket qw/ inet_aton pack_sockaddr_in AF_INET SOCK_STREAM /;
 
 our @EXPORT      = ();
-our @EXPORT_OK   = qw/ get_free_port start_server /;
+our @EXPORT_OK   = qw/ get_free_port start_server notify_parent /;
 our %EXPORT_TAGS = ();
+
+our $PPID;
+
+sub notify_parent () {
+    if ($^O ne 'MSWin32' && defined($PPID)) {
+        kill('USR1', $PPID);
+    }
+}
 
 sub get_free_port ($start, $end, $timeout = 0.1) {
     my $free_port;
@@ -54,6 +62,7 @@ sub start_server ($on_start_cb, $server_port, $attempts = 10, $wait_for_a_signal
     my $can_go_further = 0;
     my $server;
 
+    $PPID //= $$; # PID before forking the server
     $server_port //= get_free_port(49152, 65000);
 
     local $SIG{'USR1'} = sub ($sig) { $can_go_further = 1; };
