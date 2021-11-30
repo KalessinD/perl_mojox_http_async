@@ -82,10 +82,6 @@ sub on_start_cb ($port) {
 
             die($!) if ( vec($eh, fileno($client), 1) != 0 );
 
-            if ($page && ($page eq '06' || $page eq '07' || $page eq '08')) { # tests for request timeouts
-                sleep($request_timeout + 0.1);
-            }
-
             my $bytes = syswrite($client, $response, bytes::length($response), 0);
 
             warn("Can't send the response") if $bytes != bytes::length($response);
@@ -112,7 +108,6 @@ my $ua = MojoX::HTTP::Async->new(
     'ssl' => 1,
     'ssl_opts' => {
         'SSL_verify_mode' => &SSL_VERIFY_NONE,
-        #'verify_hostname' => &SSL_VERIFY_NONE
     },
     'sol_socket' => {},
     'sol_tcp' => {},
