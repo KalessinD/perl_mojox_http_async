@@ -1,6 +1,10 @@
 Changes
 =======
 
+0.09 2021 Dec 01
+    - add some checks for Win32 platform
+    - use IP address in "t/secure.t" test
+
 0.08 2021 Nov 30
     - tests refactoring
     - getting rid of Time::HiRes's sleep and alarm functions

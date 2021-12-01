@@ -86,7 +86,7 @@ use URI ();
 use Scalar::Util qw/ blessed /;
 use Errno qw / :POSIX /;
 
-our $VERSION = 0.08;
+our $VERSION = 0.09;
 
 use constant {
     IS_WIN     => ($^O eq 'MSWin32') ? 1 : 0,
