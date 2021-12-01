@@ -17,7 +17,7 @@ use IO::Socket::SSL qw/ SSL_VERIFY_NONE /;
 use FindBin qw/ $Bin /;
 use Mojo::Message::Request ();
 
-my $host = 'localhost';
+my $host = '127.0.0.1';
 my $processed_slots = 0;
 my $wait_timeout = 12;
 my $request_timeout = 7.2;
