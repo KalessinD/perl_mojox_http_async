@@ -9,7 +9,7 @@ use bytes ();
 
 use lib 'lib/', 't/lib';
 
-use Test::More ('import' => [qw/ done_testing is ok use_ok note fail /]);
+use Test::More ('import' => [qw/ done_testing is ok use_ok note diag /]);
 use Test::Utils qw/ start_server notify_parent /;
 
 use Time::HiRes qw/ sleep /;
@@ -114,6 +114,15 @@ my $ua = MojoX::HTTP::Async->new(
 my $mojo_request = Mojo::Message::Request->new();
 
 $mojo_request->parse("POST /page/01.html HTTP/1.1\r\nContent-Length: 3\r\nHost: localhost\r\nUser-Agent: Test\r\n\r\nabc");
+
+eval { $ua->_make_connections(1); };
+
+if ($@ && $@ =~ m/\QConnection refused\E/i) {
+    note("1..0 # Skipped: can't connect to the test SSL server");
+    diag("1..0 # Skipped: can't connect to the test SSL server");
+    done_testing();
+    exit;
+}
 
 ok( $ua->add($mojo_request), "Adding the first request");
 ok( $ua->add("/page/02.html"), "Adding the second request");
