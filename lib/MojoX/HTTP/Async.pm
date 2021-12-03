@@ -86,7 +86,7 @@ use URI ();
 use Scalar::Util qw/ blessed /;
 use Errno qw / :POSIX /;
 
-our $VERSION = 0.09;
+our $VERSION = 0.10;
 
 use constant {
     IS_WIN     => ($^O eq 'MSWin32') ? 1 : 0,
@@ -212,11 +212,11 @@ sub _connect ($self, $slot, $proto, $peer_addr) {
     # When a constant is used in an expression, Perl replaces it with its value at compile time,
     # and may then optimize the expression further. In particular, any code in an if (CONSTANT)
     # block will be optimized away if the constant is false.
-    if (&IS_WIN) {
+    if (&IS_NOT_WIN) {
         fcntl($socket, F_SETFL, O_NONBLOCK | FD_CLOEXEC) || croak("fcntl error has occurred: $!");
     }
 
-    if (&IS_NOT_WIN) {
+    if (&IS_WIN) {
         #$socket = IO::Socket::IP->new_from_fd(fileno($socket), '+<');
         defined($socket->blocking(0)) or croak("can't set non-blocking state on socket: $!");
         #$socket->sockopt(O_NOINHERIT, 1) or croak("fcntl error has occurred: $!"); # the same as SOCK_CLOEXEC

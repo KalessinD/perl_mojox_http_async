@@ -1,6 +1,9 @@
 Changes
 =======
 
+0.10 2021 Dec 03
+    - fixing bug made in 0.09
+
 0.09 2021 Dec 01
     - add some checks for Win32 platform
     - use IP address in "t/secure.t" test
