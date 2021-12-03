@@ -121,6 +121,7 @@ if ($@ && $@ =~ m/\QConnection refused\E/i) {
     note("1..0 # Skipped: can't connect to the test SSL server");
     diag("1..0 # Skipped: can't connect to the test SSL server");
     done_testing();
+    $server->stop();
     exit;
 }
 
