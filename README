@@ -73,7 +73,7 @@ LICENSE
 
     host
 
-      It's the obligatory option. Sets the name/adress of remote host to be
+      It's the obligatory option. Sets the name/address of remote host to be
       requested.
 
     port

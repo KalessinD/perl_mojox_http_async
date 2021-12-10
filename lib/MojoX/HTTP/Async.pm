@@ -102,7 +102,7 @@ The class constructor.
 =item host
 
 It's the obligatory option.
-Sets the name/adress of remote host to be requested.
+Sets the name/address of remote host to be requested.
 
 =item port
 

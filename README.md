@@ -69,7 +69,7 @@
 
 ###### host
         It's the obligatory option.
-        Sets the name/adress of remote host to be requested.
+        Sets the name/address of remote host to be requested.
 
 ###### port
         By default it's equal to 80. Sets the port number of remote point.
