@@ -113,7 +113,7 @@
 
         If some key is absent in HashRef then system settings will be used.
 
-        The supported key are shown below:
+        The supported keys are shown below:
 
         tcp_keepidle
             the time (in seconds) the connection needs to remain

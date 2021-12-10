@@ -86,7 +86,7 @@ use URI ();
 use Scalar::Util qw/ blessed /;
 use Errno qw / :POSIX /;
 
-our $VERSION = 0.10;
+our $VERSION = 0.11;
 
 use constant {
     IS_WIN     => ($^O eq 'MSWin32') ? 1 : 0,
@@ -143,11 +143,9 @@ In case of 0 value there will be no time restrictions.
 =item sol_socket
 
 It's a HashRef with socket options.
-THe possible keys are:
+The possible keys are:
 
-=item B<so_keepalive>
-
-Enables TCP KeepAlive on socket.
+B<so_keepalive> - enables TCP KeepAlive on socket.
 The default value is 1 (means that option is enabled).
 
 =item B<sol_tcp>
@@ -158,7 +156,7 @@ It's a HashRef with socket TCP-options.
 
 If some key is absent in HashRef then system settings will be used.
 
-The supported key are shown below:
+The supported keys are shown below:
 
 B<tcp_keepidle> - the time (in seconds) the connection needs to remain idle before TCP starts sending keepalive probes
 
@@ -217,7 +215,7 @@ sub _connect ($self, $slot, $proto, $peer_addr) {
     }
 
     if (&IS_WIN) {
-        #$socket = IO::Socket::IP->new_from_fd(fileno($socket), '+<');
+        $socket = IO::Socket::IP->new_from_fd(fileno($socket), '+<');
         defined($socket->blocking(0)) or croak("can't set non-blocking state on socket: $!");
         #$socket->sockopt(O_NOINHERIT, 1) or croak("fcntl error has occurred: $!"); # the same as SOCK_CLOEXEC
     }

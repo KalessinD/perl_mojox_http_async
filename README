@@ -111,12 +111,10 @@ LICENSE
 
     sol_socket
 
-      It's a HashRef with socket options. THe possible keys are:
+      It's a HashRef with socket options. The possible keys are:
 
-    so_keepalive
-
-      Enables TCP KeepAlive on socket. The default value is 1 (means that
-      option is enabled).
+      so_keepalive - enables TCP KeepAlive on socket.
+      The default value is 1 (means that option is enabled).
 
     sol_tcp
 
@@ -126,7 +124,7 @@ LICENSE
 
       If some key is absent in HashRef then system settings will be used.
 
-      The supported key are shown below:
+      The supported keys are shown below:
 
       tcp_keepidle - the time (in seconds) the connection needs to remain
       idle before TCP starts sending keepalive probes
