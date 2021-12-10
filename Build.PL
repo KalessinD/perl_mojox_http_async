@@ -32,6 +32,7 @@ my $build = Module::Build->new(
         'Mojo::Message::Request' => 0,
         'Mojo::Message::Response' => 0,
         'Mojo::Transaction::HTTP' => 0,
+        'Mojo::URL' => 0,
         'URI' => 1.73,
         'Errno' => 1.28,
         'Scalar::Util' => 1.4602,

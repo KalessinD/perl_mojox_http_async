@@ -39,6 +39,7 @@
             "Mojo::Message::Request" : "0",
             "Mojo::Message::Response" : "0",
             "Mojo::Transaction::HTTP" : "0",
+            "Mojo::URL" : "0",
             "Mojolicious" : "7.59",
             "POSIX" : "1.76",
             "Scalar::Util" : "1.4602",

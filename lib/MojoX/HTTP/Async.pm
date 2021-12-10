@@ -10,6 +10,7 @@ MojoX::HTTP::Async - The simple package to execute multiple parallel requests to
 
     use MojoX::HTTP::Async ();
     use Mojo::Message::Request ();
+    use Mojo::URL ();
 
     # creates new instance for async requests
     # restricts max amount of simultaneously executed requests
@@ -18,6 +19,7 @@ MojoX::HTTP::Async - The simple package to execute multiple parallel requests to
     # let's fill slots
     $ua->add( '/page1.html?lang=en');
     $ua->add( 'http://my-site.com/page2.html');
+    $ua->add( Mojo::URL->new("/page/03.html") );
     $ua->add( Mojo::Message::Request->new() );
 
     # non-blocking requests processing
