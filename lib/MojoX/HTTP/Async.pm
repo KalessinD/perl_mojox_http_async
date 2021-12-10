@@ -722,6 +722,8 @@ Closes connections in slots in the following cases:
     2. The "inactivity_conn_ts" was set and the connection was expired
     3. There are some errors in socket (for example: Connection reset by peer, Broken pipe, etc)
 
+Returns the amount of made reconnections.
+
 =cut
 
 sub refresh_connections ($self) {

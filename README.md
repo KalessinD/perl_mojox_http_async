@@ -205,11 +205,13 @@
 ##### refresh_connections ($self)
     Closes connections in slots in the following cases:
 
-    1. The slot was marked as time-outed
+        1. The slot was marked as time-outed
 
-    2. The "inactivity_conn_ts" was set and the connection was expired
+        2. The "inactivity_conn_ts" was set and the connection was expired
 
-    3. There are some errors in socket (for example: Connection reset by peer, Broken pipe, etc)
+        3. There are some errors in socket (for example: Connection reset by peer, Broken pipe, etc)
+
+    Returns the amount of made reconnections.
 
 ##### close_all ($self)
     Closes all opened connections and resets all slots with requests.
