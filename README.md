@@ -45,7 +45,7 @@
     # makes reconnection if either slot was timeouted or was inactive too long
     $ua->refresh_connections();
 
-    # close everything
+    # closes everything
     $ua->close_all();
 ```
 
@@ -93,7 +93,7 @@
         If it's equal to 0, then there will be no timeout restrictions.
 
 ###### request_timeout
-        By default it's equal to 1 Sets the time in seconds with granular
+        By default it's equal to 1. Sets the time in seconds with granular
         accuracy as micro seconds.
         The awaiting time of response will be limited with this value.
 
@@ -128,7 +128,7 @@
 
 ###### inactivity_conn_ts
         If last response was received "inactivity_conn_ts" seconds or more
-        ago, then such slots will be destroyed in "clear" method.
+        ago, then such slots will be destroyed.
 
         By default the value is 0 (disabled).
 

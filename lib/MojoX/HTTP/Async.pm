@@ -49,7 +49,7 @@ MojoX::HTTP::Async - The simple package to execute multiple parallel requests to
     # makes reconnection if either slot was timeouted or was inactive too long
     $ua->refresh_connections();
 
-    # close everything
+    # closes everything
     $ua->close_all();
 
 =head1 DESCRIPTION
@@ -134,7 +134,7 @@ If it's equal to 0, then there will be no timeout restrictions.
 
 =item request_timeout
 
-By default it's equal to 1
+By default it's equal to 1.
 Sets the time in seconds with granular accuracy as micro seconds.
 The awaiting time of response will be limited with this value.
 
@@ -167,7 +167,7 @@ B<tcp_keepcnt> - the maximum number of keepalive probes TCP should send before d
 =item inactivity_conn_ts
 
 If last response was received C<inactivity_conn_ts> seconds or more ago,
-then such slots will be destroyed in C<clear> method.
+then such slots will be destroyed.
 
 By default the value is 0 (disabled).
 
