@@ -774,7 +774,7 @@ sub close_all ($self) {
     return;
 }
 
-=head2 DESTROY($class)
+=head2 DESTROY($self)
 
 The class destructor.
 

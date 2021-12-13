@@ -216,7 +216,7 @@
 ##### close_all ($self)
     Closes all opened connections and resets all slots with requests.
 
-##### DESTROY($class)
+##### DESTROY($self)
     The class destructor.
 
     Closes all opened sockets.
