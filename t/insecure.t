@@ -10,7 +10,7 @@ use bytes ();
 use lib 'lib/', 't/lib';
 
 use Test::More ('import' => [qw/ done_testing is ok use_ok note like /]);
-use Test::Utils qw/ start_server notify_parent /;
+use Test::Utils qw/ start_server notify_parent IS_NOT_WIN /;
 
 use Time::HiRes qw/ sleep /;
 use Socket qw/ sockaddr_in AF_INET INADDR_ANY SOCK_STREAM /;
@@ -105,6 +105,14 @@ my $ua = MojoX::HTTP::Async->new(
     'sol_socket' => {},
     'sol_tcp' => {},
     'inactivity_conn_ts' => $inactivity_timeout,
+    &IS_NOT_WIN() ? (
+        'sol_socket' => {'so_keepalive' => 1},
+        'sol_tcp' => {
+            'tcp_keepidle' => 15,
+            'tcp_keepintvl' => 3,
+            'tcp_keepcnt' => 2,
+        }
+    ) : (),
 );
 
 my $mojo_request = Mojo::Message::Request->new();

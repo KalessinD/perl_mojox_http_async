@@ -15,7 +15,7 @@ use constant {
 };
 
 our @EXPORT      = ();
-our @EXPORT_OK   = qw/ get_free_port start_server notify_parent /;
+our @EXPORT_OK   = qw/ get_free_port start_server notify_parent IS_NOT_WIN /;
 our %EXPORT_TAGS = ();
 
 our $PPID;
