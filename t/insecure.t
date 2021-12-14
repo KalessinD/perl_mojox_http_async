@@ -18,7 +18,6 @@ use Mojo::Message::Request ();
 use Mojo::URL ();
 
 my $host = 'localhost';
-my $can_go_further = 0;
 my $processed_slots = 0;
 my $wait_timeout = 12;
 my $request_timeout = 7.2;
@@ -102,8 +101,6 @@ my $ua = MojoX::HTTP::Async->new(
     'connect_timeout' => $connect_timeout,
     'request_timeout' => $request_timeout,
     'ssl' => 0,
-    'sol_socket' => {},
-    'sol_tcp' => {},
     'inactivity_conn_ts' => $inactivity_timeout,
     &IS_NOT_WIN() ? (
         'sol_socket' => {'so_keepalive' => 1},

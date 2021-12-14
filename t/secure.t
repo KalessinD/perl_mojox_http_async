@@ -23,7 +23,6 @@ my $wait_timeout = 12;
 my $request_timeout = 7.2;
 my $connect_timeout = 6;
 my $inactivity_timeout = 6.5;
-my $can_go_further = 0;
 
 BEGIN { use_ok('MojoX::HTTP::Async') };
 
