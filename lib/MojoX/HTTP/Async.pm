@@ -14,7 +14,7 @@ MojoX::HTTP::Async - The simple package to execute multiple parallel requests to
 
     # creates new instance for async requests
     # restricts max amount of simultaneously executed requests
-    my $ua = MojoX::HTTP::Async->new('host' => 'my-site.com', 'slots' => 2);
+    my $ua = MojoX::HTTP::Async->new('host' => 'my-site.com', 'slots' => 4);
 
     # let's fill slots
     $ua->add( '/page1.html?lang=en');
