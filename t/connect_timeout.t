@@ -5,23 +5,16 @@ use utf8;
 use strict;
 use warnings;
 use experimental qw/ signatures /;
-use bytes ();
 
 use lib 'lib/', 't/lib';
 
-use Test::More ('import' => [qw/ done_testing is ok use_ok note like /]);
-use Test::Utils qw/ start_server notify_parent IS_NOT_WIN /;
+use Socket qw/ AF_INET SOCK_STREAM INADDR_ANY sockaddr_in /;
 
-use Time::HiRes qw/ sleep /;
-use Socket qw/ sockaddr_in AF_INET INADDR_ANY SOCK_STREAM /;
-use Mojo::Message::Request ();
-use Mojo::URL ();
+use Test::More ('import' => [qw/ done_testing is ok use_ok /]);
+use Test::Utils qw/ start_server notify_parent /;
 
 my $host = 'localhost';
-my $wait_timeout = 2;
-my $request_timeout = 1.5;
 my $connect_timeout = 3;
-my $inactivity_timeout = 1.1;
 
 BEGIN { use_ok('MojoX::HTTP::Async') };
 
@@ -44,19 +37,8 @@ my $server = start_server(\&on_start_cb, $host);
 my $ua = MojoX::HTTP::Async->new(
     'host' => $host,
     'port' => $server->port(),
-    'slots' => 2,
+    'slots' => 1,
     'connect_timeout' => $connect_timeout,
-    'request_timeout' => $request_timeout,
-    'ssl' => 0,
-    'inactivity_conn_ts' => $inactivity_timeout,
-    &IS_NOT_WIN() ? (
-        'sol_socket' => {'so_keepalive' => 1},
-        'sol_tcp' => {
-            'tcp_keepidle' => 15,
-            'tcp_keepintvl' => 3,
-            'tcp_keepcnt' => 2,
-        }
-    ) : (),
 );
 
 ok($ua->add("/page/01.html"), "Adding the first request");

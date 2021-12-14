@@ -12,14 +12,13 @@ use lib 'lib/', 't/lib';
 use Test::More ('import' => [qw/ done_testing is ok use_ok note diag /]);
 use Test::Utils qw/ start_server notify_parent /;
 
+use Mojo::Message::Request ();
 use Time::HiRes qw/ sleep /;
 use IO::Socket::SSL qw/ SSL_VERIFY_NONE /;
 use FindBin qw/ $Bin /;
-use Mojo::Message::Request ();
 
 my $host = '127.0.0.1';
 my $processed_slots = 0;
-my $wait_timeout = 12;
 my $request_timeout = 7.2;
 my $connect_timeout = 6;
 my $inactivity_timeout = 6.5;

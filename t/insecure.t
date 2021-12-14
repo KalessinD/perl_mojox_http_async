@@ -9,7 +9,7 @@ use bytes ();
 
 use lib 'lib/', 't/lib';
 
-use Test::More ('import' => [qw/ done_testing is ok use_ok note like /]);
+use Test::More ('import' => [qw/ done_testing is ok use_ok like /]);
 use Test::Utils qw/ start_server notify_parent IS_NOT_WIN /;
 
 use Time::HiRes qw/ sleep /;
