@@ -17,6 +17,7 @@ use Socket qw/ sockaddr_in AF_INET INADDR_ANY SOCK_STREAM /;
 use Mojo::Message::Request ();
 use Mojo::URL ();
 
+my $slots = 2;
 my $host = 'localhost';
 my $processed_slots = 0;
 my $wait_timeout = 12;
@@ -97,7 +98,7 @@ my $server = start_server(\&on_start_cb, $host);
 my $ua = MojoX::HTTP::Async->new(
     'host' => $host,
     'port' => $server->port(),
-    'slots' => 2,
+    'slots' => $slots,
     'connect_timeout' => $connect_timeout,
     'request_timeout' => $request_timeout,
     'ssl' => 0,
@@ -214,6 +215,17 @@ while (my $tx = $ua->wait_for_next_response($wait_timeout)) {
 }
 
 is($processed_slots, 1, "checking the amount of processed slots");
+
+# let's check inactivity timeout
+sleep($inactivity_timeout + 0.1);
+
+my $n = $ua->refresh_connections();
+
+is($n, $slots, "Checking the amount of renewed slots");
+
+# all connections are fresh
+$n = $ua->refresh_connections();
+is($n, 0, "Checking the amount of renewed slots");
 
 done_testing();
 
