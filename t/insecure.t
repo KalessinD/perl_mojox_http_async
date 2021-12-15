@@ -76,7 +76,7 @@ sub on_start_cb ($port) {
             die($!) if ( vec($eh, fileno($client), 1) != 0 );
 
             if ($page && ($page eq '06' || $page eq '07' || $page eq '08')) { # tests for request timeouts
-                sleep($request_timeout + 0.1);
+                sleep($request_timeout + 0.75);
             }
 
             my $bytes = syswrite($client, $response, bytes::length($response), 0);
