@@ -9,13 +9,12 @@ use bytes ();
 
 use lib 'lib/', 't/lib';
 
-use Test::More ('import' => [qw/ done_testing is ok use_ok like /]);
-use Test::Utils qw/ start_server notify_parent IS_NOT_WIN /;
+use Test::More ('import' => [qw/ done_testing is ok use_ok /]);
+use Test::Utils qw/ start_server notify_parent /;
 
 use Time::HiRes qw/ sleep /;
 use Socket qw/ sockaddr_in AF_INET INADDR_ANY SOCK_STREAM /;
-use Mojo::Message::Request ();
-use Mojo::URL ();
+
 
 my $slots = 2;
 my $host = 'localhost';
