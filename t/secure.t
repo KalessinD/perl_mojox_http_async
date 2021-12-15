@@ -9,7 +9,7 @@ use bytes ();
 
 use lib 'lib/', 't/lib';
 
-use Test::More ('import' => [qw/ done_testing is ok use_ok note diag /]);
+use Test::More ('import' => [qw/ done_testing is ok use_ok plan /]);
 use Test::Utils qw/ start_server notify_parent /;
 
 use Mojo::Message::Request ();
@@ -115,8 +115,7 @@ $mojo_request->parse("POST /page/01.html HTTP/1.1\r\nContent-Length: 3\r\nHost: 
 eval { $ua->_make_connections(1); };
 
 if ($@ && $@ =~ m/\QConnection refused\E/i) {
-    note("1..0 # Skipped: can't connect to the test SSL server");
-    diag("1..0 # Skipped: can't connect to the test SSL server");
+    plan('skip_all' => "Skipped: can't connect to the test SSL server");
     done_testing();
     $server->stop();
     exit;
