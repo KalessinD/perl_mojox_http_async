@@ -23,7 +23,6 @@ my $processed_slots = 0;
 my $wait_timeout = 12;
 my $request_timeout = 7.2;
 my $connect_timeout = 6;
-my $inactivity_timeout = 6.5;
 
 BEGIN { use_ok('MojoX::HTTP::Async') };
 
@@ -102,7 +101,6 @@ my $ua = MojoX::HTTP::Async->new(
     'connect_timeout' => $connect_timeout,
     'request_timeout' => $request_timeout,
     'ssl' => 0,
-    'inactivity_conn_ts' => $inactivity_timeout,
     &IS_NOT_WIN() ? (
         'sol_socket' => {'so_keepalive' => 1},
         'sol_tcp' => {
@@ -215,17 +213,6 @@ while (my $tx = $ua->wait_for_next_response($wait_timeout)) {
 }
 
 is($processed_slots, 1, "checking the amount of processed slots");
-
-# let's check inactivity timeout
-sleep($inactivity_timeout + 0.1);
-
-my $n = $ua->refresh_connections();
-
-is($n, $slots, "Checking the amount of renewed slots");
-
-# all connections are fresh
-$n = $ua->refresh_connections();
-is($n, 0, "Checking the amount of renewed slots");
 
 done_testing();
 
