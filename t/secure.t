@@ -12,7 +12,6 @@ use lib 'lib/', 't/lib';
 use Test::More ('import' => [qw/ done_testing is ok use_ok plan /]);
 use Test::Utils qw/ get_listen_socket start_server notify_parent /;
 
-use Mojo::Message::Request ();
 use Time::HiRes qw/ sleep /;
 use IO::Socket::SSL qw/ SSL_VERIFY_NONE /;
 
@@ -100,10 +99,7 @@ my $ua = MojoX::HTTP::Async->new(
     'inactivity_conn_ts' => $inactivity_timeout,
 );
 
-my $mojo_request = Mojo::Message::Request->new();
-
-$mojo_request->parse("POST /page/01.html HTTP/1.1\r\nContent-Length: 3\r\nHost: localhost\r\nUser-Agent: Test\r\n\r\nabc");
-
+# there can be some connection issues on rare and specific OS due to their settings
 eval { $ua->_make_connections(1); };
 
 if ($@ && $@ =~ m/\QConnection refused\E/i) {
@@ -113,7 +109,9 @@ if ($@ && $@ =~ m/\QConnection refused\E/i) {
     exit;
 }
 
-ok( $ua->add($mojo_request), "Adding the first request");
+$ua->close_all();
+
+ok( $ua->add("/page/01.html"), "Adding the first request");
 ok( $ua->add("/page/02.html"), "Adding the second request");
 ok(!$ua->add("/page/03.html"), "Adding the third request");
 
