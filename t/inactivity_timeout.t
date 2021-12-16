@@ -10,10 +10,9 @@ use bytes ();
 use lib 'lib/', 't/lib';
 
 use Test::More ('import' => [qw/ done_testing is ok use_ok /]);
-use Test::Utils qw/ start_server notify_parent /;
+use Test::Utils qw/ get_listen_socket start_server notify_parent /;
 
 use Time::HiRes qw/ sleep /;
-use Socket qw/ sockaddr_in AF_INET INADDR_ANY SOCK_STREAM /;
 
 
 my $slots = 2;
@@ -25,14 +24,10 @@ my $inactivity_timeout = 1;
 BEGIN { use_ok('MojoX::HTTP::Async') };
 
 sub on_start_cb ($port) {
-    socket(my $socket, AF_INET, SOCK_STREAM, getprotobyname( 'tcp' ));
 
     my $client;
-    my $QUEUE_LENGTH = 3;
-    my $my_addr = sockaddr_in($port, INADDR_ANY);
+    my $socket = get_listen_socket($host, $port);
 
-    bind($socket, $my_addr ) or die( qq(Couldn't bind socket to port $port: $!\n));
-    listen($socket, $QUEUE_LENGTH) or die( "Couldn't listen port $port: $!\n" );
     notify_parent();
 
     while (my $peer = accept($client, $socket)) {

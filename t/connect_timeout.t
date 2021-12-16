@@ -8,10 +8,9 @@ use experimental qw/ signatures /;
 
 use lib 'lib/', 't/lib';
 
-use Socket qw/ AF_INET SOCK_STREAM INADDR_ANY sockaddr_in /;
-
 use Test::More ('import' => [qw/ done_testing is ok use_ok /]);
-use Test::Utils qw/ start_server notify_parent /;
+use Test::Utils qw/ get_listen_socket start_server notify_parent /;
+
 
 my $host = 'localhost';
 my $connect_timeout = 3;
@@ -19,16 +18,10 @@ my $connect_timeout = 3;
 BEGIN { use_ok('MojoX::HTTP::Async') };
 
 sub on_start_cb ($port) {
-    socket(my $socket, AF_INET, SOCK_STREAM, getprotobyname( 'tcp' ));
 
-    my $QUEUE_LENGTH = 3;
-    my $my_addr = sockaddr_in($port, INADDR_ANY);
-
-    bind($socket, $my_addr ) or die( qq(Couldn't bind socket to port $port: $!\n));
-    listen($socket, $QUEUE_LENGTH) or die( "Couldn't listen port $port: $!\n" );
+    my $socket = get_listen_socket($host, $port);
 
     notify_parent();
-
     sleep($connect_timeout + 3);
 }
 

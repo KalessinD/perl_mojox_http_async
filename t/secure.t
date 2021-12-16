@@ -10,12 +10,12 @@ use bytes ();
 use lib 'lib/', 't/lib';
 
 use Test::More ('import' => [qw/ done_testing is ok use_ok plan /]);
-use Test::Utils qw/ start_server notify_parent /;
+use Test::Utils qw/ get_listen_socket start_server notify_parent /;
 
 use Mojo::Message::Request ();
 use Time::HiRes qw/ sleep /;
 use IO::Socket::SSL qw/ SSL_VERIFY_NONE /;
-use FindBin qw/ $Bin /;
+
 
 my $host = '127.0.0.1';
 my $processed_slots = 0;
@@ -26,16 +26,8 @@ my $inactivity_timeout = 6.5;
 BEGIN { use_ok('MojoX::HTTP::Async') };
 
 sub on_start_cb ($port) {
-    my $QUEUE_LENGTH = 3;
-    my $socket = IO::Socket::SSL->new(
-        'LocalAddr' => $host,
-        'LocalPort' => $port,
-        'Listen'    => $QUEUE_LENGTH,
-        'SSL_cert_file' => "${Bin}/certs/server-cert.pem",
-        'SSL_key_file' => "${Bin}/certs/server-key.pem",
-        'SSL_passwd_cb' => sub { 1234 },
-    ) or die "Can't create socket: $!";
 
+    my $socket = get_listen_socket($host, $port, 1);
     my $default_response = "HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n";
     my %responses_by_request_number = (
         '01' => "HTTP/1.1 200 OK\r\nContent-Length: 10\r\n\r\n0123456789",
